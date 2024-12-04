@@ -1,0 +1,1 @@
+C:\repos_git\zman-clock-win\zman-clock\obj\Debug\zman-clock.esproj.CoreCompileInputs.cache

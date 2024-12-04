@@ -1,0 +1,49 @@
+// COLORS
+$soft-orange: rgba(244, 162, 89, 0.35);
+$tomato-red: rgba(242, 92, 102, 0.44);
+$medium-blue: #1E272D;
+
+.close-button {
+  position: relative;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.left-right {
+  height: 2px;
+  width: 25px;
+  position: absolute;
+  margin-top: 12px;
+  background-color: $soft-orange;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  transition: all .3s ease-in;
+}
+
+.right-left {
+  height: 2px;
+  width: 25px;
+  position: absolute;
+  margin-top: 12px;
+  background-color: $soft-orange;
+  border-radius: 2px;
+  transform: rotate(-45deg);
+  transition: all .3s ease-in;
+}
+
+
+.close-button:hover .left-right {
+  transform: rotate(-45deg);
+  background-color: $tomato-red;
+}
+
+.close-button:hover .right-left {
+  transform: rotate(45deg);
+  background-color: $tomato-red;
+}
+
+.close-button:hover label {
+  opacity: 1;
+}
+

@@ -13,7 +13,6 @@
     right: 5vw;
     cursor: pointer;
 }
-
 .fullscreen-single-zman {
     display: flex;
     flex-direction: column;
@@ -23,6 +22,7 @@
     border-radius: 100px;
     width: min(75vw, 700px);
     height: min(75vh, 700px);
+    padding: 20px;
 }
 .fullscreen-zman-time-text {
     color: #99bb99;

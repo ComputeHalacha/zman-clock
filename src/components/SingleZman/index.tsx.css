@@ -12,6 +12,9 @@
     margin: 5px;
     cursor: pointer;
 }
+.single-zman:hover {
+    background-color: #2e2e2e;
+}
 .zman-time-text {
     color: #99bb99;
 }

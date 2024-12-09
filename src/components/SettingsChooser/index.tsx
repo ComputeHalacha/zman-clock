@@ -38,9 +38,9 @@ export default function SettingsChooser({ onChangeSettings, onClose }: SettingsC
       setShowLocationChooser(false);
     }
   }
-
+  
   return (
-    <main style={{ direction: "ltr" }}>
+    <main style={{ direction: "ltr" }}>     
       {showLocationChooser ? (
         <section className="h-full w-full">
           <LocationChooser

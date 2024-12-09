@@ -7,9 +7,12 @@
     max-width: 100vw;
     height: 100vh;
     font-family: Rubik, "Noto Sans", system-ui, Helvetica, Arial, sans-serif;
+    overscroll-behavior: none;
+    touch-action:none;
 }
-body.is-dragging {
-    touch-action: pinch-zoom;
+body.is-dragging {    
+    overscroll-behavior: none;
+    touch-action:none;
 }
 .basad {
     font-size: 7pt;
@@ -19,6 +22,9 @@ body.is-dragging {
     position: absolute;
     right: 2px;
     top: 0px;
+}
+.icons {
+    direction: ltr;
 }
 
 .garbage-bin {
@@ -46,7 +52,7 @@ body.is-dragging {
 }
 
 .app-heb {
-    direction: rtl;   
+    direction: rtl;
     letter-spacing: 2px;
 }
 
@@ -80,14 +86,6 @@ h5 {
     flex: 1;
     padding-top: 1vh;
     background-color: #242424;
-}
-.zmanim-list {
-    background-color:#282828;
-    padding:10px 20px;
-    z-index: 1;
-}
-.zmanim-list:hover {
-    background-color: #282830;
 }
 .day-notes-view {
     margin-top: 10px;

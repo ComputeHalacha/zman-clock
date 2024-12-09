@@ -1,4 +1,7 @@
 import { useState, useEffect, DragEvent } from "react";
+import {polyfill} from "mobile-drag-drop";
+import {scrollBehaviourDragImageTranslateOverride} from "mobile-drag-drop/scroll-behaviour";
+
 import {
   jDate,
   Utils,
@@ -15,6 +18,7 @@ import Drawer from "../components/Drawer";
 import SettingsChooser from "../components/SettingsChooser";
 import FullScreen from "../components/FullScreen";
 import Sidebar from "../components/Sidebar";
+import HelpModal from "../components/HelpModal";
 import "./index.tsx.css";
 import type { SunTimes, Time, ShulZmanimType, ZmanTime, ZmanToShow, Location } from "jcal-zmanim";
 
@@ -41,6 +45,7 @@ export default function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [fullScreenZman, setFullScreenZman] = useState<ZmanTime>({
     time: { hour: 0, minute: 0 },
     isTomorrow: false,
@@ -57,6 +62,10 @@ export default function App() {
   const [isBeinHashmashos, setIsBeinHashmashos] = useState(false);
   //Run once
   useEffect(() => {
+    polyfill({
+      dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride
+  });
+  window.addEventListener( 'touchmove', function() {}, {passive: false});
     setInitialData();
   }, []);
 
@@ -326,24 +335,34 @@ export default function App() {
       setNeedsFullRefresh(true);
     }
   };
-  
+
   handleSwipeEdges(() => setSidebarOpen(true));
-  
+
   return (
     <>
       <div
         className={`app ${settings.english ? "app-eng" : "app-heb"}`}
+        onDragEnter={(ev) => ev.preventDefault()}
         onDragOver={(ev) => ev.preventDefault()}>
         <div className="basad">בס"ד</div>
-        <div className="fixed sm:top-0 top-0 sm:left-0 left-0 z-10">
+        <div className="icons fixed sm:top-0 top-0 sm:left-0 left-0 z-10 text-left">
           <a
             href="#"
-            title={settings.english ? "Open settings" : "הגדרות"}
+            title={settings.english ? "Settings" : "הגדרות"}
             data-te-ripple-init={true}
             data-te-ripple-color="light"
             className="cursor-pointer p-1"
             onClick={() => setIsDrawerOpen(true)}>
             <Hamburger />
+          </a>
+          <a
+            href="#"
+            title={settings.english ? "Help" : "עזרה"}
+            data-te-ripple-init={true}
+            data-te-ripple-color="light"
+            className="cursor-pointer p-1"
+            onClick={() => setIsHelpModalOpen(true)}>
+            <HelpIcon />
           </a>
         </div>
         <div className="top-section">
@@ -412,6 +431,9 @@ export default function App() {
                 />
               ))}
           </div>
+          {isHelpModalOpen && (
+            <HelpModal english={settings.english} onClose={() => setIsHelpModalOpen(false)} />
+          )}
         </div>
         <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
           <SettingsChooser
@@ -554,5 +576,20 @@ const Hamburger = () => (
         d="M20.75 17C20.75 17.4142 20.4142 17.75 20 17.75L4 17.75C3.58579 17.75 3.25 17.4142 3.25 17C3.25 16.5858 3.58579 16.25 4 16.25L20 16.25C20.4142 16.25 20.75 16.5858 20.75 17Z"
         fill="#1C274C"></path>{" "}
     </g>
+  </svg>
+);
+const HelpIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth="1.5"
+    stroke="#545454"
+    className="size-6">
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+    />
   </svg>
 );

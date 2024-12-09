@@ -3,14 +3,14 @@
     top: 0;        
     left:0;    
     bottom:0;
-    width: auto;    
-    background-color: #303030;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: left;
+    width: auto;        
+    background-color: #303030;    
     padding: 10px;    
-    z-index: 1000;   
+    z-index: 1000;  
+    display: flex;
+    flex-direction: column; 
+    min-width:200px;
+    max-width: 40vw;
 }
 .sidebar-close-button{
     position: absolute;
@@ -20,4 +20,22 @@
     border: none;
     font-size: 20px;
     cursor: pointer;
+}
+.sidebar-header{
+    color: #877;
+    margin-bottom: 10px;
+}
+.sidebar-zmanim-list{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+}
+.sidebar-single-item{
+    cursor: pointer;
+}
+.sidebar-single-item:hover{
+    background-color: #505050;
+    color: white;
 }

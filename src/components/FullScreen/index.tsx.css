@@ -1,0 +1,76 @@
+.fullscreen{
+    display: flex;
+    flex-direction: column;
+    background-color: #000;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;    
+}
+.fullscreen-close-button{
+    position: absolute;
+    top: 5vh;
+    right: 5vw;
+    cursor: pointer;
+}
+
+.fullscreen-single-zman {
+    display: flex;
+    flex-direction: column;
+    background-color: #1e1e1e;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100px;
+    width: min(75vw, 700px);
+    height: min(75vh, 700px);
+}
+.fullscreen-zman-time-text {
+    color: #99bb99;
+}
+.fullscreen-within-10-zman-time-text {
+    font-size: 30px;
+    font-weight: bold;
+    color: #99bb99;
+}
+.fullscreen-time-remaining-text {
+    font-size: min(45px, 20vw);
+    text-align: center;
+}
+.fullscreen-time-remaining-text-eng {
+    font-size: min(40px, 8.5vw);
+    text-align: center;
+}
+.fullscreen-time-remaining-number {
+    color: #ffffee;
+    font-size: min(40px, 8vw);
+    padding-right:5px;
+}
+.fullscreen-time-remaining-number-eng {
+    color: #ffffee;
+    font-size: min(34px, 8vw);
+    padding-right:5px;
+}
+.fullscreen-time-remaining-label {
+    font-size: min(40px, 8vw);
+    font-weight: bold;
+}
+.fullscreen-time-remaining-label-eng {
+    font-size: min(34px, 8vw);
+    font-weight: bold;
+}
+.fullscreen-zman-type-name-text {
+    color: #9999ff;
+    font-size: 40px;
+}
+.fullscreen-zman-type-name-text-eng {
+    color: #9999ff;
+    font-size: 40px;
+}
+.fullscreen-zman-type-name-text-was {
+    color: #555588;
+    font-size: 30px;
+}
+.fullscreen-zman-type-name-text-was-eng {
+    color: #555588;
+    font-size: 24px;
+}

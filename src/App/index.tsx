@@ -1,18 +1,28 @@
-import { useState, useEffect } from "react";
-import { jDate, Utils, getNotifications, ZmanimUtils, Zmanim, DaysOfWeek } from "jcal-zmanim";
+import { useState, useEffect, DragEvent } from "react";
+import {
+  jDate,
+  Utils,
+  getNotifications,
+  ZmanimUtils,
+  Zmanim,
+  DaysOfWeek,
+  ZmanTypes,
+} from "jcal-zmanim";
 import { useSettingsData } from "../settingsContext";
 import Settings from "../settings";
 import { SingleZman } from "../components/SingleZman";
 import Drawer from "../components/Drawer";
 import SettingsChooser from "../components/SettingsChooser";
+import FullScreen from "../components/FullScreen";
+import Sidebar from "../components/Sidebar";
 import "./index.tsx.css";
 import type { SunTimes, Time, ShulZmanimType, ZmanTime, ZmanToShow, Location } from "jcal-zmanim";
 
-function App() {
+export default function App() {
   const initialSettings = new Settings();
   const initialSDate = new Date();
   const initialJdate = new jDate(initialSDate);
-  const { settings } = useSettingsData();
+  const { settings, setSettings } = useSettingsData();
 
   const [sdate, setSdate] = useState<Date>(initialSDate);
   const [jdate, setJdate] = useState<jDate>(initialJdate);
@@ -29,9 +39,22 @@ function App() {
   const [needsFullRefresh, setNeedsFullRefresh] = useState(true);
   const [needsNotificationsRefresh, setNeedsNotificationsRefresh] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [fullScreenZman, setFullScreenZman] = useState<ZmanTime>({
+    time: { hour: 0, minute: 0 },
+    isTomorrow: false,
+    zmanType: {
+      id: 0,
+      desc: "",
+      eng: "",
+      heb: "",
+      offset: undefined,
+      whichDaysFlags: undefined,
+    },
+  });
   const [isNightTime, setIsNightTime] = useState(false);
   const [isBeinHashmashos, setIsBeinHashmashos] = useState(false);
-
   //Run once
   useEffect(() => {
     setInitialData();
@@ -271,108 +294,265 @@ function App() {
       return settings.english ? jdate.toString() : jdate.toStringHeb();
     }
   };
+  const showFullScreen = (zt: ZmanTime) => {
+    setFullScreenZman(zt);
+    setIsFullScreenOpen(true);
+  };
+
+  const goToNextZman = () => {
+    if (zmanTimes) {
+      const index = zmanTimes?.indexOf(fullScreenZman) || 0;
+      setFullScreenZman(zmanTimes[index + 1]);
+    }
+  };
+
+  const sidebarOnDrop = (event: DragEvent<HTMLElement>): void => {
+    const zmanTypeId = parseInt(event.dataTransfer.getData("ZmanTypeToHide"));
+    if (!isNaN(zmanTypeId)) {
+      let list = [...settings.zmanimToShow];
+      if (list.find((zts) => zts.id === zmanTypeId)) {
+        list = list.filter((zts) => zts.id !== zmanTypeId);
+      }
+      setSettings({ ...settings, zmanimToShow: list } as Settings);
+      setNeedsFullRefresh(true);
+    }
+  };
+
+  const appOnDrop = (event: DragEvent<HTMLElement>): void => {
+    const zmanTypeId = parseInt(event.dataTransfer.getData("ZmanTypeToShow"));
+    if (!isNaN(zmanTypeId)) {
+      const zts = ZmanTypes.find((zt) => zt.id === zmanTypeId);
+      setSettings({ ...settings, zmanimToShow: [...settings.zmanimToShow, zts] } as Settings);
+      setNeedsFullRefresh(true);
+    }
+  };
+  
+  handleSwipeEdges(() => setSidebarOpen(true));
+  
   return (
-    <div className={`app ${settings.english ? "app-eng" : "app-heb"}`}>
-      <div className="basad">בס"ד</div>
-      <div className="fixed sm:top-0 top-0 sm:left-0 left-0 z-10">
-        <a
-          href="#"
-          title={settings.english ? "Open settings" : "הגדרות"}
-          data-te-ripple-init={true}
-          data-te-ripple-color="light"
-          className="cursor-pointer p-1"
-          onClick={() => setIsDrawerOpen(true)}>
-          <svg
-            width="24px"
-            height="24px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="#545454">
-            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-              {" "}
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M20.75 7C20.75 7.41421 20.4142 7.75 20 7.75L4 7.75C3.58579 7.75 3.25 7.41421 3.25 7C3.25 6.58579 3.58579 6.25 4 6.25L20 6.25C20.4142 6.25 20.75 6.58579 20.75 7Z"
-                fill="#1C274C"></path>{" "}
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M20.75 12C20.75 12.4142 20.4142 12.75 20 12.75L4 12.75C3.58579 12.75 3.25 12.4142 3.25 12C3.25 11.5858 3.58579 11.25 4 11.25L20 11.25C20.4142 11.25 20.75 11.5858 20.75 12Z"
-                fill="#1C274C"></path>{" "}
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M20.75 17C20.75 17.4142 20.4142 17.75 20 17.75L4 17.75C3.58579 17.75 3.25 17.4142 3.25 17C3.25 16.5858 3.58579 16.25 4 16.25L20 16.25C20.4142 16.25 20.75 16.5858 20.75 17Z"
-                fill="#1C274C"></path>{" "}
-            </g>
-          </svg>
-        </a>
-      </div>
-      <div className="top-section">
-        <h4>
-          {settings.english
-            ? settings.location.Name
-            : !!settings.location.NameHebrew
-            ? settings.location.NameHebrew
-            : settings.location.Name}
-        </h4>
-        {isBeinHashmashos && (
-          <div className="bein-hashmashos">
-            {settings.english ? "Bein Hashmashos" : "בין השמשות"}
+    <>
+      <div
+        className={`app ${settings.english ? "app-eng" : "app-heb"}`}
+        onDragOver={(ev) => ev.preventDefault()}>
+        <div className="basad">בס"ד</div>
+        <div className="fixed sm:top-0 top-0 sm:left-0 left-0 z-10">
+          <a
+            href="#"
+            title={settings.english ? "Open settings" : "הגדרות"}
+            data-te-ripple-init={true}
+            data-te-ripple-color="light"
+            className="cursor-pointer p-1"
+            onClick={() => setIsDrawerOpen(true)}>
+            <Hamburger />
+          </a>
+        </div>
+        <div className="top-section">
+          <h4>
+            {settings.english
+              ? settings.location.Name
+              : !!settings.location.NameHebrew
+              ? settings.location.NameHebrew
+              : settings.location.Name}
+          </h4>
+          {isBeinHashmashos && (
+            <div className="bein-hashmashos">
+              {settings.english ? "Bein Hashmashos" : "בין השמשות"}
+            </div>
+          )}
+          <h2 className="date-text">{getDateText()}</h2>
+          <h3 className="s-date-text">
+            {settings.english
+              ? Utils.toStringDate(sdate, false, false)
+              : Utils.toShortStringDate(sdate, !settings.location.Israel)}
+          </h3>
+          {!!notifications?.dayNotes && notifications.dayNotes.length > 0 && (
+            <div className="day-notes-inner-view">
+              {notifications.dayNotes.map((n, index) => (
+                <div className="day-notes-text" key={index.toString()}>
+                  {n}
+                </div>
+              ))}
+            </div>
+          )}
+          {!!notifications?.tefillahNotes && notifications?.tefillahNotes.length > 0 && (
+            <div className="tefillah-notes-inner-view">
+              {notifications.tefillahNotes.map((n, index) => (
+                <div className="tefillah-notes-text" key={index.toString()}>
+                  {n}
+                </div>
+              ))}
+            </div>
+          )}
+          <h1 className="time-text">
+            {Utils.getTimeString(currentTime, undefined, settings.armyTime)}
+          </h1>
+        </div>
+        <div className="zmanim-section">
+          <div
+            className="zmanim-list"
+            onDragOver={(ev) => {
+              ev.preventDefault();
+              ev.dataTransfer.dropEffect = "copy";
+            }}
+            onDragEnter={(ev) => ev.preventDefault()}
+            onDrop={(ev) => appOnDrop(ev)}>
+            {zmanTimes &&
+              zmanTimes.map((zis, index) => (
+                <SingleZman
+                  key={index}
+                  currenttime={currentTime}
+                  zt={zis}
+                  index={index}
+                  itemheight={15}
+                  onDragStart={(ev) =>
+                    ev.dataTransfer.setData("ZmanTypeToHide", zis.zmanType.id.toString())
+                  }
+                  onClick={() => showFullScreen(zis)}
+                  onDrag={() => setSidebarOpen(true)}
+                />
+              ))}
           </div>
-        )}
-        <h2 className="date-text">{getDateText()}</h2>
-        <h3 className="s-date-text">
-          {settings.english
-            ? Utils.toStringDate(sdate, false, false)
-            : Utils.toShortStringDate(sdate, !settings.location.Israel)}
-        </h3>
-        {!!notifications?.dayNotes && notifications.dayNotes.length > 0 && (
-          <div className="day-notes-inner-view">
-            {notifications.dayNotes.map((n, index) => (
-              <div className="day-notes-text" key={index.toString()}>
-                {n}
-              </div>
-            ))}
-          </div>
-        )}
-        {!!notifications?.tefillahNotes && notifications?.tefillahNotes.length > 0 && (
-          <div className="tefillah-notes-inner-view">
-            {notifications.tefillahNotes.map((n, index) => (
-              <div className="tefillah-notes-text" key={index.toString()}>
-                {n}
-              </div>
-            ))}
-          </div>
-        )}
-        <h1 className="time-text">
-          {Utils.getTimeString(currentTime, undefined, settings.armyTime)}
-        </h1>
-      </div>
-      <div className="zmanim-section">
-        {zmanTimes &&
-          zmanTimes.map((zis, index) => (
-            <SingleZman
-              key={index}
-              currentTime={currentTime}
-              zt={zis}
-              index={index}
-              itemHeight={15}
-            />
-          ))}
-      </div>
-      <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
-        <SettingsChooser
-          onChangeSettings={() => setNeedsFullRefresh(true)}
-          onClose={() => setIsDrawerOpen(false)}
-        />
-      </Drawer>
-    </div>
+        </div>
+        <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
+          <SettingsChooser
+            onChangeSettings={() => setNeedsFullRefresh(true)}
+            onClose={() => setIsDrawerOpen(false)}
+          />
+        </Drawer>
+      </div>{" "}
+      <FullScreen
+        isOpen={isFullScreenOpen}
+        setIsOpen={setIsFullScreenOpen}
+        gotoNextZman={() => goToNextZman()}
+        zmanTime={fullScreenZman}
+        currentTime={currentTime}
+      />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        setIsOpen={setSidebarOpen}
+        onDrop={(ev) => sidebarOnDrop(ev)}
+      />
+    </>
   );
 }
+const handleSwipeEdges = (onSwipeLeft?: Function, onSwipeRight?: Function) => {
+  var div = document.body;
+  var mouse = {
+    isDown: false,
+    inLeft: false,
+    inRight: false,
+    downTimestamp: 0,
+  };
+  var width: number, thresholdStart: number, thresholdEnd: number, thresholdMilliseconds: number;
 
-export default App;
+  function resize() {
+    width = window.innerWidth;
+    thresholdStart = 0.1 * width; //within 10% of screen width
+    thresholdEnd = 0.13 * width; //beyond 13% of screen width
+    thresholdMilliseconds = 500; //must be done in 500 milliseconds
+  }
+  document.addEventListener("resize", resize, false);
+  resize(); //initialize
+
+  div.addEventListener("mousedown", function (e) {
+    var x = e.pageX;
+    mouse.isDown = true;
+    mouse.downTimestamp = performance.now();
+
+    if (x < thresholdStart) {
+      mouse.inLeft = true;
+    } else if (x > width - thresholdStart) {
+      mouse.inRight = true;
+    }
+  });
+  div.addEventListener("mousemove", function (e) {
+    var x = e.pageX;
+    if (mouse.inLeft && x > thresholdEnd) {
+      mouse.inLeft = false;
+      if (performance.now() - mouse.downTimestamp < thresholdMilliseconds) {
+        swipeEdgeFromLeft();
+      }
+    } else if (mouse.inRight && x < width - thresholdEnd) {
+      mouse.inRight = false;
+      if (performance.now() - mouse.downTimestamp < thresholdMilliseconds) {
+        swipeEdgeFromRight();
+      }
+    }
+  });
+  div.addEventListener("mouseup", function (e) {
+    mouse.isDown = false;
+    mouse.inLeft = false;
+    mouse.inRight = false;
+    mouse.downTimestamp = 0;
+  });
+
+  div.addEventListener("touchstart", function (e) {
+    var x = e.touches[0].pageX;
+    mouse.isDown = true;
+    mouse.downTimestamp = performance.now();
+
+    if (x < thresholdStart) {
+      mouse.inLeft = true;
+    } else if (x > width - thresholdStart) {
+      mouse.inRight = true;
+    }
+  });
+  div.addEventListener("touchmove", function (e) {
+    var x = e.touches[0].pageX;
+    if (mouse.inLeft && x > thresholdEnd) {
+      mouse.inLeft = false;
+      if (performance.now() - mouse.downTimestamp < thresholdMilliseconds) {
+        swipeEdgeFromLeft();
+      }
+    } else if (mouse.inRight && x < width - thresholdEnd) {
+      mouse.inRight = false;
+      if (performance.now() - mouse.downTimestamp < thresholdMilliseconds) {
+        swipeEdgeFromRight();
+      }
+    }
+  });
+  div.addEventListener("touchend", function (e) {
+    var x = e.changedTouches[0].pageX;
+    mouse.isDown = false;
+    mouse.inLeft = false;
+    mouse.inRight = false;
+    mouse.downTimestamp = 0;
+  });
+  function swipeEdgeFromLeft() {
+    if (onSwipeLeft) onSwipeLeft();
+  }
+  function swipeEdgeFromRight() {
+    if (onSwipeRight) onSwipeRight();
+  }
+};
+
+const Hamburger = () => (
+  <svg
+    width="24px"
+    height="24px"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="#545454">
+    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+    <g id="SVGRepo_iconCarrier">
+      {" "}
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M20.75 7C20.75 7.41421 20.4142 7.75 20 7.75L4 7.75C3.58579 7.75 3.25 7.41421 3.25 7C3.25 6.58579 3.58579 6.25 4 6.25L20 6.25C20.4142 6.25 20.75 6.58579 20.75 7Z"
+        fill="#1C274C"></path>{" "}
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M20.75 12C20.75 12.4142 20.4142 12.75 20 12.75L4 12.75C3.58579 12.75 3.25 12.4142 3.25 12C3.25 11.5858 3.58579 11.25 4 11.25L20 11.25C20.4142 11.25 20.75 11.5858 20.75 12Z"
+        fill="#1C274C"></path>{" "}
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M20.75 17C20.75 17.4142 20.4142 17.75 20 17.75L4 17.75C3.58579 17.75 3.25 17.4142 3.25 17C3.25 16.5858 3.58579 16.25 4 16.25L20 16.25C20.4142 16.25 20.75 16.5858 20.75 17Z"
+        fill="#1C274C"></path>{" "}
+    </g>
+  </svg>
+);

@@ -63,7 +63,7 @@ export default function SettingsChooser({ onChangeSettings, onClose }: SettingsC
               <CloseButton onClick={() => onClose()} />
             </article>
           </section>
-          <section className="h-full" style={{ direction: eng ? "ltr" : "rtl" }}>
+          <section className="h-full settings-chooser" style={{ direction: eng ? "ltr" : "rtl" }}>
             <div className="flex flex-row justify-between items-center px-4 py-2 mb-1.5 bg-[#212223]">
               <div className="text-gray-400">{eng ? "Language" : "שפה"}</div>
               <div className="flex">

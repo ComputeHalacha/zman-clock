@@ -19,8 +19,8 @@ import SettingsChooser from "../components/SettingsChooser";
 import FullScreen from "../components/FullScreen";
 import Sidebar from "../components/Sidebar";
 import HelpModal from "../components/HelpModal";
-import "./index.tsx.css";
 import type { SunTimes, Time, ShulZmanimType, ZmanTime, ZmanToShow, Location } from "jcal-zmanim";
+import "./index.tsx.scss";
 
 export default function App() {
   const initialSettings = new Settings();
@@ -337,7 +337,13 @@ export default function App() {
     }
   };
 
-  handleSwipeEdges(() => setSidebarOpen(true));
+  const hideModalsAndSidebars = () => {    
+    setIsDrawerOpen(false);
+    setSidebarOpen(false);
+    setIsHelpModalOpen(false);
+  };
+
+  handleSwipeEdges(() => {setSidebarOpen(true)});
 
   return (
     <>
@@ -369,10 +375,13 @@ export default function App() {
             <HelpIcon />
           </a>
         </div>
-        <div className="top-section">
+        <div
+          className="top-section"
+          onClick={hideModalsAndSidebars}>
           <h4
             className="location-text"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setShowLocation(true);
               setIsDrawerOpen(true);
             }}>
@@ -415,7 +424,9 @@ export default function App() {
             {Utils.getTimeString(currentTime, undefined, settings.armyTime)}
           </h1>
         </div>
-        <div className="zmanim-section">
+        <div
+          className="zmanim-section"
+          onClick={hideModalsAndSidebars}>
           <div
             className="zmanim-list"
             onDragOver={(ev) => {
@@ -468,7 +479,7 @@ export default function App() {
         onDrop={(ev) => sidebarOnDrop(ev)}
       />
     </>
-  );
+  );  
 }
 const handleSwipeEdges = (onSwipeLeft?: Function, onSwipeRight?: Function) => {
   var div = document.body;

@@ -1,6 +1,6 @@
 import { useState, useEffect, DragEvent } from "react";
-import {polyfill} from "mobile-drag-drop";
-import {scrollBehaviourDragImageTranslateOverride} from "mobile-drag-drop/scroll-behaviour";
+import { polyfill } from "mobile-drag-drop";
+import { scrollBehaviourDragImageTranslateOverride } from "mobile-drag-drop/scroll-behaviour";
 
 import {
   jDate,
@@ -60,12 +60,13 @@ export default function App() {
   });
   const [isNightTime, setIsNightTime] = useState(false);
   const [isBeinHashmashos, setIsBeinHashmashos] = useState(false);
+  const [showLocation, setShowLocation] = useState(false);
   //Run once
   useEffect(() => {
     polyfill({
-      dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride
-  });
-  window.addEventListener( 'touchmove', function() {}, {passive: false});
+      dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
+    });
+    window.addEventListener("touchmove", function () {}, { passive: false });
     setInitialData();
   }, []);
 
@@ -352,7 +353,10 @@ export default function App() {
             data-te-ripple-init={true}
             data-te-ripple-color="light"
             className="cursor-pointer p-1"
-            onClick={() => setIsDrawerOpen(true)}>
+            onClick={() => {
+              setShowLocation(false);
+              setIsDrawerOpen(true);
+            }}>
             <Hamburger />
           </a>
           <a
@@ -366,7 +370,12 @@ export default function App() {
           </a>
         </div>
         <div className="top-section">
-          <h4>
+          <h4
+            className="location-text"
+            onClick={() => {
+              setShowLocation(true);
+              setIsDrawerOpen(true);
+            }}>
             {settings.english
               ? settings.location.Name
               : !!settings.location.NameHebrew
@@ -438,7 +447,11 @@ export default function App() {
         <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
           <SettingsChooser
             onChangeSettings={() => setNeedsFullRefresh(true)}
-            onClose={() => setIsDrawerOpen(false)}
+            onClose={() => {
+              setShowLocation(false);
+              setIsDrawerOpen(false);
+            }}
+            showLocation={showLocation}
           />
         </Drawer>
       </div>{" "}

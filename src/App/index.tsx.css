@@ -71,6 +71,9 @@ h5 {
     right: 10px;
     z-index: 1000;
 }
+.location-text{
+    cursor: pointer;
+}
 
 .top-section {
     padding: 0 0 10px 0;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSettingsData } from "../../settingsContext";
 import { Location, ZmanToShow, ZmanTypes } from "jcal-zmanim";
 import ToggleSwitch from "../toggleSwitch";
@@ -9,12 +9,20 @@ import CloseButton from "../CloseButton";
 interface SettingsChooserProps {
   onChangeSettings: () => any;
   onClose: Function;
+  showLocation: boolean;
 }
 
-export default function SettingsChooser({ onChangeSettings, onClose }: SettingsChooserProps) {
+export default function SettingsChooser({
+  onChangeSettings,
+  onClose,
+  showLocation,
+}: SettingsChooserProps) {
   const { settings, setSettings, resetZmanimToShowSettings } = useSettingsData();
-  const [showLocationChooser, setShowLocationChooser] = useState(false);
+  const [showLocationChooser, setShowLocationChooser] = useState(showLocation);
   const eng = settings.english;
+
+  useEffect(() => 
+    setShowLocationChooser(showLocation), [showLocation]);
 
   function changeSetting(settingToChange: object) {
     setSettings({ ...settings, ...settingToChange } as Settings);
@@ -38,9 +46,9 @@ export default function SettingsChooser({ onChangeSettings, onClose }: SettingsC
       setShowLocationChooser(false);
     }
   }
-  
+
   return (
-    <main style={{ direction: "ltr" }}>     
+    <main style={{ direction: "ltr" }}>
       {showLocationChooser ? (
         <section className="h-full w-full">
           <LocationChooser

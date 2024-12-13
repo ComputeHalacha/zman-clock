@@ -1,4 +1,5 @@
 import CloseButton from "./CloseButton";
+import { version } from "../../package.json";
 import favicon from "../../favicon.png";
 
 interface HelpModalProps {
@@ -23,9 +24,10 @@ export default function HelpModal({ english, onClose }: HelpModalProps) {
               <img src={favicon} alt="Zman Clock" className="h-10 w-10" />
             <h3 className="text-lg leading-6 font-large font-bold text-gray-500">
               {english ? "Zman Clock" : "שעון זמנים"}
-            </h3>
+            </h3>            
             <CloseButton onClick={() => onClose()} />
           </div>
+          <div className="text-xs text-[#877] text-center">Version {version}</div>
           <div className="mt-2 text-sm text-gray-400 bg-[#212223] max-h-[80%] p-3 overflow-y-scroll">
             {english ? (
               <>

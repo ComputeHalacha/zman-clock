@@ -5,6 +5,7 @@ import ToggleSwitch from "../toggleSwitch";
 import Settings from "../../settings";
 import LocationChooser from "../LocationChooser";
 import CloseButton from "../CloseButton";
+import { version } from "../../../package.json";
 
 interface SettingsChooserProps {
   onChangeSettings: () => any;
@@ -64,14 +65,15 @@ export default function SettingsChooser({
         <>
           <section>
             <article className="flex justify-between flex-row align-top p-2">
-              <a onClick={() => resetZmanimToShowSettings()} className="text-[#944] cursor-pointer">
+              <a onClick={() => resetZmanimToShowSettings()} className="text-[#968] cursor-pointer text-xs">
                 {eng ? "Reset" : "איפוס"}
               </a>
-              <header className="p-4 font-bold text-3xl flex-1 text-center  text-[#955]">
-                {eng ? "Settings" : "הגדרות"}
-              </header>
+              <div className="text-xs text-[#877]">Zman Clock Version {version}</div>
               <CloseButton onClick={() => onClose()} />
             </article>
+            <header className="pb-2 font-bold text-3xl flex-1 text-center text-[#955]">
+              {eng ? "Settings" : "הגדרות"}
+            </header>
           </section>
           <section className="h-full settings-chooser" style={{ direction: eng ? "ltr" : "rtl" }}>
             <div className="flex flex-row justify-between items-center px-4 py-2 mb-1.5 bg-[#212223]">

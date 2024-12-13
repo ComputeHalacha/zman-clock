@@ -21,8 +21,7 @@ export default function SettingsChooser({
   const [showLocationChooser, setShowLocationChooser] = useState(showLocation);
   const eng = settings.english;
 
-  useEffect(() => 
-    setShowLocationChooser(showLocation), [showLocation]);
+  useEffect(() => setShowLocationChooser(showLocation), [showLocation]);
 
   function changeSetting(settingToChange: object) {
     setSettings({ ...settings, ...settingToChange } as Settings);
@@ -55,7 +54,10 @@ export default function SettingsChooser({
             location={settings.location}
             onChangeLocation={changeLocation}
             eng={eng}
-            onClose={() => setShowLocationChooser(false)}
+            onClose={() => {
+              setShowLocationChooser(false);
+              if (showLocation) onClose();
+            }}
           />
         </section>
       ) : (

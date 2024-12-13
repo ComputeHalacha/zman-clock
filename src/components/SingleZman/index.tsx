@@ -2,7 +2,7 @@ import React from "react";
 import { useSettingsData } from "../../settingsContext";
 import { Utils } from "jcal-zmanim";
 import type { Time, ZmanTime } from "jcal-zmanim";
-import "./index.tsx.css";
+import "./index.tsx.scss";
 
 interface SingleZManProps extends React.HTMLAttributes<HTMLDivElement> {
   currenttime: Time;

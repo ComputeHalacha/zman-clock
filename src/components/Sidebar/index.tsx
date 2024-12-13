@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSettingsData } from "../../settingsContext";
 import { Time, Utils, ZmanTime, ZmanTypes } from "jcal-zmanim";
 import CloseButton from "../CloseButton";
-import "./index.tsx.css";
+import "./index.tsx.scss";
 
 type SideBarProps = {
   isOpen: boolean;

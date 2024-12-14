@@ -11,7 +11,7 @@ type locationChooserProps = {
 export default function LocationChooser({ eng, onChangeLocation, onClose }: locationChooserProps) {
   const [list, setList] = useState(Locations);
   return (
-    <main className="max-w-screen-sm min-w-fit" onClick={() => onClose()}>
+    <main className="max-w-screen-sm min-w-fit transform ease-in-out" onClick={() => onClose()}>
       <section>
         <article className="flex justify-between flex-row align-top p-2">
           <header className="p-4 font-bold text-2xl flex-1 text-center  text-[#955]">
@@ -26,6 +26,7 @@ export default function LocationChooser({ eng, onChangeLocation, onClose }: loca
           className="p-3 w-full rounded"
           placeholder={eng ? "Filter" : "חפש"}
           style={{ direction: eng ? "ltr" : "rtl" }}
+          onClick={(e) => e.stopPropagation()}
           onChange={(e) =>
             setList(
               Locations.filter((l) =>

@@ -5,21 +5,27 @@ import favicon from "../../favicon.png";
 interface HelpModalProps {
   onClose: () => void;
   english?: boolean;
+  isOpen: boolean;
 }
 
-export default function HelpModal({ english, onClose }: HelpModalProps) {
+export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) {
   const hebrew = !english;
   return (
     <div
-      className="fixed z-50 inset-0 flex items-center justify-center overflow-hidden max-h-[90vh] w-full"
+      className={
+        "fixed z-50 inset-0 flex items-center justify-center overflow-hidden max-h-[90vh] w-full " +
+        (isOpen
+          ? "transition-opacity opacity-100 duration-500 translate-x-0  "
+          : "transition-all delay-500 opacity-0 -translate-x-full  ")
+      }
       onClick={() => onClose()}>
       <div className="fixed inset-0 transition-opacity">
         <div className="absolute inset-0 bg-[#222] opacity-75"></div>
       </div>
       <div
-        className={`rounded-lg text-left overflow-hidden shadow-xl transform transition-all w-full max-w-[90%] text-${
+        className={`rounded-lg text-left overflow-hidden shadow-xl transform transition-transform duration-300 ease-in-out w-full max-w-[90%] text-${
           english ? "left" : "right"
-        }`}>
+        } ${isOpen ? "translate-y-0" : "-translate-y-full"}`}>
         <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 h-[800px] max-h-[85vh] overflow-hidden bg-[#343434]">
           <div className="flex flex-row justify-between items-center">
             <img src={favicon} alt="Zman Clock" className="h-10 w-10" />
@@ -29,7 +35,9 @@ export default function HelpModal({ english, onClose }: HelpModalProps) {
             <CloseButton onClick={() => onClose()} />
           </div>
           <div className="text-xs text-[#877] text-center">Version {version}</div>
-          <div className="mt-2 text-sm text-gray-400 bg-[#212223] max-h-[80%] p-3 overflow-y-scroll">
+          <div
+            className="mt-2 text-sm text-gray-400 bg-[#212223] max-h-[80%] p-3 overflow-y-scroll"
+            onClick={(e) => e.stopPropagation()}>
             {english ? (
               <>
                 <p>

@@ -337,13 +337,15 @@ export default function App() {
     }
   };
 
-  const hideModalsAndSidebars = () => {    
+  const hideModalsAndSidebars = () => {
     setIsDrawerOpen(false);
     setSidebarOpen(false);
     setIsHelpModalOpen(false);
   };
 
-  handleSwipeEdges(() => {setSidebarOpen(true)});
+  handleSwipeEdges(() => {
+    setSidebarOpen(true);
+  });
 
   return (
     <>
@@ -375,9 +377,7 @@ export default function App() {
             <HelpIcon />
           </a>
         </div>
-        <div
-          className="top-section"
-          onClick={hideModalsAndSidebars}>
+        <div className="top-section" onClick={hideModalsAndSidebars}>
           <h4
             className="location-text"
             onClick={(e) => {
@@ -424,9 +424,7 @@ export default function App() {
             {Utils.getTimeString(currentTime, undefined, settings.armyTime)}
           </h1>
         </div>
-        <div
-          className="zmanim-section"
-          onClick={hideModalsAndSidebars}>
+        <div className="zmanim-section" onClick={hideModalsAndSidebars}>
           <div
             className="zmanim-list"
             onDragOver={(ev) => {
@@ -451,9 +449,6 @@ export default function App() {
                 />
               ))}
           </div>
-          {isHelpModalOpen && (
-            <HelpModal english={settings.english} onClose={() => setIsHelpModalOpen(false)} />
-          )}
         </div>
         <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
           <SettingsChooser
@@ -478,8 +473,13 @@ export default function App() {
         setIsOpen={setSidebarOpen}
         onDrop={(ev) => sidebarOnDrop(ev)}
       />
+      <HelpModal
+        english={settings.english}
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
+      />
     </>
-  );  
+  );
 }
 const handleSwipeEdges = (onSwipeLeft?: Function, onSwipeRight?: Function) => {
   var div = document.body;

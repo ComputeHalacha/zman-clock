@@ -16,7 +16,7 @@ export default function Sidebar({ isOpen, setIsOpen, onDrop }: SideBarProps) {
   return (
     isOpen && (
       <div
-        className="sidebar"
+        className="sidebar transform ease-in-out"
         onDragEnter={(ev) => ev.preventDefault()}
         onDragOver={(ev) => ev.preventDefault()}
         onDrop={(ev) => onDrop(ev)}

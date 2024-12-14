@@ -48,16 +48,23 @@ export default function SettingsChooser({
   }
 
   return (
-    <main style={{ direction: "ltr" }}>
+    <main style={{ direction: "ltr" }} onClick={() => onClose()}>
       {showLocationChooser ? (
         <section className="h-full w-full">
           <LocationChooser
             location={settings.location}
-            onChangeLocation={changeLocation}
+            onChangeLocation={(location: Location) => {
+              changeLocation(location);
+              if (showLocation) {
+                onClose();
+              }
+            }}
             eng={eng}
             onClose={() => {
               setShowLocationChooser(false);
-              if (showLocation) onClose();
+              if (showLocation) {
+                onClose();
+              }
             }}
           />
         </section>
@@ -84,7 +91,7 @@ export default function SettingsChooser({
             <div className="flex flex-row justify-between items-center px-4 py-2 mb-1.5 bg-[#212223]">
               <div className="text-gray-400">{eng ? "Language" : "שפה"}</div>
               <div className="flex">
-                <div className="flex items-center px-3">
+                <div className="flex items-center px-3" onClick={(e) => e.stopPropagation()}>
                   <input
                     id="horizontal-list-eng"
                     type="radio"
@@ -92,6 +99,7 @@ export default function SettingsChooser({
                     name="list-radio"
                     onChange={(event) => changeSetting({ english: event.target.checked })}
                     className="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500 cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
                   />
                   <label
                     htmlFor="horizontal-list-eng"
@@ -109,6 +117,7 @@ export default function SettingsChooser({
                     name="list-radio"
                     onChange={(event) => changeSetting({ english: !event.target.checked })}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
                   />
                   <label
                     htmlFor="horizontal-list-heb"
@@ -183,6 +192,7 @@ export default function SettingsChooser({
                 value={settings.minToShowPassedZman}
                 className="text-amber-400 w-1/5 rounded text-center bg-[#292928]"
                 onChange={(e) => changeSetting({ minToShowPassedZman: parseInt(e.target.value) })}
+                onClick={(e) => e.stopPropagation()}
               />
             </div>
             <div className="flex flex-row justify-between items-center px-4 py-1 mb-1.5 bg-[#212223]">
@@ -194,6 +204,7 @@ export default function SettingsChooser({
                 value={settings.numberOfItemsToShow}
                 className="text-amber-400  w-1/5 rounded text-center bg-[#292928]"
                 onChange={(e) => changeSetting({ numberOfItemsToShow: parseInt(e.target.value) })}
+                onClick={(e) => e.stopPropagation()}
               />
             </div>
             <header

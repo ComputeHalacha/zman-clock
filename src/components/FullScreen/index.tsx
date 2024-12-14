@@ -47,7 +47,7 @@ export default function FullScreen({
   }
 
   return (
-    <main
+    <main onClick={() => setIsOpen(false)}
       className={
         "fixed top-0 left-0 h-full w-full z-10 bg-gray-900 bg-opacity-25 inset-0 transform ease-in-out " +
         (isOpen

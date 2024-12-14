@@ -10,7 +10,9 @@ interface HelpModalProps {
 export default function HelpModal({ english, onClose }: HelpModalProps) {
   const hebrew = !english;
   return (
-    <div className="fixed z-50 inset-0 flex items-center justify-center overflow-hidden max-h-[90vh] w-full">
+    <div
+      className="fixed z-50 inset-0 flex items-center justify-center overflow-hidden max-h-[90vh] w-full"
+      onClick={() => onClose()}>
       <div className="fixed inset-0 transition-opacity">
         <div className="absolute inset-0 bg-[#222] opacity-75"></div>
       </div>
@@ -19,12 +21,11 @@ export default function HelpModal({ english, onClose }: HelpModalProps) {
           english ? "left" : "right"
         }`}>
         <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 h-[800px] max-h-[85vh] overflow-hidden bg-[#343434]">
-          <div
-            className="flex flex-row justify-between items-center">
-              <img src={favicon} alt="Zman Clock" className="h-10 w-10" />
+          <div className="flex flex-row justify-between items-center">
+            <img src={favicon} alt="Zman Clock" className="h-10 w-10" />
             <h3 className="text-lg leading-6 font-large font-bold text-gray-500">
               {english ? "Zman Clock" : "שעון זמנים"}
-            </h3>            
+            </h3>
             <CloseButton onClick={() => onClose()} />
           </div>
           <div className="text-xs text-[#877] text-center">Version {version}</div>

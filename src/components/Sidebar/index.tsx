@@ -19,7 +19,8 @@ export default function Sidebar({ isOpen, setIsOpen, onDrop }: SideBarProps) {
         className="sidebar"
         onDragEnter={(ev) => ev.preventDefault()}
         onDragOver={(ev) => ev.preventDefault()}
-        onDrop={(ev) => onDrop(ev)}>
+        onDrop={(ev) => onDrop(ev)}
+        onClick={() => setIsOpen(false)}>
         <CloseButton className="sidebar-close-button" onClick={() => setIsOpen(false)} />
         <div className="sidebar-header">
           <h2 className="text-xl font-bold">{english ? "Add/Remove Zmanim" : "הוסף/הסר זמנים"}</h2>

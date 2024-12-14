@@ -65,7 +65,12 @@ export default function SettingsChooser({
         <>
           <section>
             <article className="flex justify-between flex-row align-top p-2">
-              <a onClick={() => resetZmanimToShowSettings()} className="text-[#968] cursor-pointer text-xs">
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  resetZmanimToShowSettings();
+                }}
+                className="text-[#968] cursor-pointer text-xs">
                 {eng ? "Reset" : "איפוס"}
               </a>
               <div className="text-xs text-[#877]">Zman Clock Version {version}</div>
@@ -124,7 +129,10 @@ export default function SettingsChooser({
               </div>
               <div
                 className="ms-3 text-sm font-medium text-blue-700 cursor-pointer"
-                onClick={() => setShowLocationChooser(true)}>
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLocationChooser(true);
+                }}>
                 {eng ? "Change" : "שנה"}
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, DragEvent } from "react";
+import React, { useState, useEffect, DragEvent } from "react";
 import { polyfill } from "mobile-drag-drop";
 import { scrollBehaviourDragImageTranslateOverride } from "mobile-drag-drop/scroll-behaviour";
 

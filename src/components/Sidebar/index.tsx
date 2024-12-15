@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useSettingsData } from "../../settingsContext";
-import { Time, Utils, ZmanTime, ZmanTypes } from "jcal-zmanim";
+import { ZmanTypes } from "jcal-zmanim";
 import CloseButton from "../CloseButton";
 import "./index.tsx.scss";
 

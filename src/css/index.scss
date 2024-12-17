@@ -108,3 +108,41 @@ code {
     background-color: #f9f9f9;
   }
 }
+
+[data-theme="light"] {
+  --color-background: #ffffff;
+  --color-text: #213547;
+  --color-link: #646cff;
+  --color-link-hover: #535bf2;
+  --color-button-background: #f9f9f9;
+  --color-code-background: #f9f9f9;
+}
+
+[data-theme="dark"] {
+  --color-background: #242424;
+  --color-text: rgba(255, 255, 255, 0.87);
+  --color-link: #646cff;
+  --color-link-hover: #535bf2;
+  --color-button-background: #1a1a1a;
+  --color-code-background: #1a1a1a;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-link);
+  &:hover {
+    color: var(--color-link-hover);
+  }
+}
+
+button {
+  background-color: var(--color-button-background);
+}
+
+code {
+  background-color: var(--color-code-background);
+}

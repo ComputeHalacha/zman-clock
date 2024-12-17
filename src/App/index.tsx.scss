@@ -142,3 +142,31 @@
     font-size: 20px;
     font-weight: bold;
 }
+
+@media (prefers-color-scheme: light) {
+    .top-section {
+        background-color: #f0f0f0;
+    }
+    .zmanim-section {
+        background-color: #ffffff;
+    }
+    .day-notes-text {
+        color: #5555aa;
+    }
+    .tefillah-notes-text {
+        color: #667777;
+        background-color: #e0e0e0;
+    }
+    .date-text {
+        color: #aa5555;
+    }
+    .s-date-text {
+        color: #665;
+    }
+    .time-text {
+        color: #337733;
+    }
+    .time-now-text {
+        color: #6666ff;
+    }
+}

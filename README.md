@@ -137,4 +137,4 @@ Enjoy using Zman Clock to keep track of important halachic times throughout the 
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for details.
+This project is licensed under the [GNU AGPL](LICENSE). See the [LICENSE](LICENSE) file for details.

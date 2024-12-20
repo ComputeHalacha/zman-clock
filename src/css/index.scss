@@ -14,6 +14,12 @@
   overscroll-behavior: none;
   touch-action: none;
 }
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
 body {
   margin: 0;
   display: flex;
@@ -22,8 +28,8 @@ body {
   line-height: 1.5;
   font-weight: 400;
   color-scheme: dark light;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--color-text);
+  background-color: var(--color-background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -37,10 +43,10 @@ body {
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--color-link);
   text-decoration: inherit;
   :hover {
-    color: #535bf2;
+    color: var(--color-link-hover);
   }
 }
 
@@ -63,11 +69,11 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--color-button-background);
   cursor: pointer;
   transition: border-color 0.25s;
   :hover {
-    border-color: #646cff;
+    border-color: var(--color-button-hover);
   }
   :focus,
   :focus-visible {
@@ -76,7 +82,7 @@ button {
 }
 
 code {
-  background-color: #1a1a1a;
+  background-color: var(--color-button-background);
   padding: 2px 4px;
   margin: 0 4px;
   border-radius: 4px;
@@ -84,65 +90,4 @@ code {
 
 .card {
   padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-  code {
-    background-color: #f9f9f9;
-  }
-}
-
-[data-theme="light"] {
-  --color-background: #ffffff;
-  --color-text: #213547;
-  --color-link: #646cff;
-  --color-link-hover: #535bf2;
-  --color-button-background: #f9f9f9;
-  --color-code-background: #f9f9f9;
-}
-
-[data-theme="dark"] {
-  --color-background: #242424;
-  --color-text: rgba(255, 255, 255, 0.87);
-  --color-link: #646cff;
-  --color-link-hover: #535bf2;
-  --color-button-background: #1a1a1a;
-  --color-code-background: #1a1a1a;
-}
-
-body {
-  background-color: var(--color-background);
-  color: var(--color-text);
-}
-
-a {
-  color: var(--color-link);
-  &:hover {
-    color: var(--color-link-hover);
-  }
-}
-
-button {
-  background-color: var(--color-button-background);
-}
-
-code {
-  background-color: var(--color-code-background);
 }

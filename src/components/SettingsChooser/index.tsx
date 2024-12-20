@@ -207,6 +207,65 @@ export default function SettingsChooser({
                 onClick={(e) => e.stopPropagation()}
               />
             </div>
+            <div className="flex flex-row justify-between items-center px-4 py-1 mb-1.5 bg-[#212223]">
+              <div className="text-gray-400">{eng ? "Theme" : "ערכת נושא"}</div>
+              <div className="flex">
+                <div className="flex items-center px-3" onClick={(e) => e.stopPropagation()}>
+                  <input
+                    id="theme-system"
+                    type="radio"
+                    checked={settings.theme === "system"}
+                    name="theme-radio"
+                    onChange={(event) => changeSetting({ theme: "system" })}
+                    className="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500 cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <label
+                    htmlFor="theme-system"
+                    className={`w-full py-3 ms-2 text-sm font-medium ${
+                      settings.theme === "system" ? "text-amber-400" : "text-blue-700"
+                    }`}>
+                    {eng ? "System" : "מערכת"}
+                  </label>
+                </div>
+                <div className="flex items-center px-3">
+                  <input
+                    id="theme-light"
+                    type="radio"
+                    checked={settings.theme === "light"}
+                    name="theme-radio"
+                    onChange={(event) => changeSetting({ theme: "light" })}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <label
+                    htmlFor="theme-light"
+                    className={`w-full py-3 ms-2 text-sm font-medium ${
+                      settings.theme === "light" ? "text-amber-400" : "text-blue-700"
+                    }`}>
+                    {eng ? "Light" : "בהיר"}
+                  </label>
+                </div>
+                <div className="flex items-center px-3">
+                  <input
+                    id="theme-dark"
+                    type="radio"
+                    checked={settings.theme === "dark"}
+                    name="theme-radio"
+                    onChange={(event) => changeSetting({ theme: "dark" })}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <label
+                    htmlFor="theme-dark"
+                    className={`w-full py-3 ms-2 text-sm font-medium ${
+                      settings.theme === "dark" ? "text-amber-400" : "text-blue-700"
+                    }`}>
+                    {eng ? "Dark" : "כהה"}
+                  </label>
+                </div>
+              </div>
+            </div>
             <header
               className={`mt-4 p-4 font-bold text-lg flex-1 text-[#955] ${
                 eng ? "text-left" : "text-right"

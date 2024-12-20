@@ -24,12 +24,12 @@ const SingleZman: React.FC<SingleZManProps> = (props: SingleZManProps) => {
   const minutesFrom10 = 10 - minutes;
   const isWithin10 = !was && !zt.isTomorrow && minutes < 10;
   const timeRemainingColor = was
-    ? "#844"
+    ? "var(--time-text-was-color)"
     : isWithin10
     ? `rgb(${200 + minutesFrom10 * 5},
                         ${150 + minutesFrom10 * 5},
                         100)`
-    : "#a99";
+    : "var(--time-text-remaining-color)";
 
   return (
     <div className="single-zman" style={{ height: `${itemheight}%` }} draggable={true} {...props}>

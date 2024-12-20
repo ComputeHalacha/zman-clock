@@ -13,14 +13,14 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
   return (
     <div
       className={
-        "fixed z-50 inset-0 flex items-center justify-center overflow-hidden max-h-[90vh] w-full " +
+        "fixed z-50 inset-0 flex items-center justify-center overflow-hidden h-full w-full " +
         (isOpen
           ? "transition-opacity opacity-100 duration-500 translate-x-0  "
           : "transition-all delay-500 opacity-0 -translate-x-full  ")
       }
       onClick={() => onClose()}>
       <div className="fixed inset-0 transition-opacity">
-        <div className="absolute inset-0 bg-[#222] opacity-75"></div>
+        <div className="absolute inset-0 bg-[#555] opacity-75 h-full w-full"></div>
       </div>
       <div
         className={`rounded-lg text-left overflow-hidden shadow-xl transform transition-transform duration-300 ease-in-out w-full max-w-[90%] text-${

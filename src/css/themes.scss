@@ -25,6 +25,8 @@
     --date-text-color: #a58891;
     --s-date-text-color: #887766;
     --time-text-color: #383366;
+    --help-modal-outside-color:var(--color-background);
+    --help-modal-outside-text-color:#544;
   }
   
   [data-theme="dark"] {
@@ -54,4 +56,6 @@
     --date-text-color: #bb8888;
     --s-date-text-color: #887766;
     --time-text-color: #559955;
+    --help-modal-outside-color: #343434;
+    --help-modal-outside-text-color:#877;
   }

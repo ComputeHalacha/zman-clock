@@ -40,6 +40,7 @@ In the settings section, you can set:
 *   Whether or not to show the Shir Shel Yom of the Gr”a.
 *   How many minutes after an active Zman has past to continue showing the notification.
 *   The maximum number of Zmanim to be shown at one time.
+*   The theme - choose between system, light, and dark themes.
 
 ## Installation
 
@@ -126,6 +127,7 @@ To use **Zman Clock**, follow these steps:
     - **Zmanim Display Options:**
       - Set how long to display a zman after it has passed.
       - Define the maximum number of zmanim to display at once.
+    - **Theme:** Choose between system, light, and dark themes.
 
 6. **Access Additional Information**
 

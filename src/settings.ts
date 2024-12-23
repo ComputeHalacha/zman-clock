@@ -93,7 +93,7 @@ export default class Settings {
     /**
      * @property {string} [theme] name of the style theme
      */
-    this.theme = theme || "dark";
+    this.theme = theme || "system";
     /**
      * @property {boolean} [showDafYomi] Show Daf Yomi?
      */

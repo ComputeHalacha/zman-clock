@@ -28,6 +28,21 @@ export const SettingsProvider = (props: PropsWithChildren) => {
     }
   }, []);
 
+  useEffect(() => {
+    const applyTheme = (theme: string) => {
+      if (theme === "system") {
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+        document.documentElement.setAttribute("data-theme", systemTheme);
+      } else {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+    };
+
+    applyTheme(settings.theme);
+  }, [settings.theme]);
+
   const setSettings = async (s: Settings) => {
     const sStr = JSON.stringify(s);
     localStorage.setItem("Settings", sStr);

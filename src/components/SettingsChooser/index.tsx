@@ -6,6 +6,7 @@ import Settings from "../../settings";
 import LocationChooser from "../LocationChooser";
 import CloseButton from "../CloseButton";
 import { version } from "../../../package.json";
+import "./index.tsx.scss";
 
 interface SettingsChooserProps {
   onChangeSettings: () => any;
@@ -77,19 +78,19 @@ export default function SettingsChooser({
                   e.stopPropagation();
                   resetZmanimToShowSettings();
                 }}
-                className="text-[#968] cursor-pointer text-xs">
+                className="settings-reset-color cursor-pointer text-xs">
                 {eng ? "Reset" : "איפוס"}
               </a>
-              <div className="text-xs text-[#877]">Zman Clock Version {version}</div>
+              <div className="settings-version-color text-xs">Zman Clock Version {version}</div>
               <CloseButton onClick={() => onClose()} />
             </article>
-            <header className="pb-2 font-bold text-3xl flex-1 text-center text-[#955]">
+            <header className="settings-header-color pb-2 font-bold text-3xl flex-1 text-center">
               {eng ? "Settings" : "הגדרות"}
             </header>
           </section>
           <section className="h-full settings-chooser" style={{ direction: eng ? "ltr" : "rtl" }}>
-            <div className="flex flex-row justify-between items-center px-4 py-2 mb-1.5 bg-[#212223]">
-              <div className="text-gray-400">{eng ? "Language" : "שפה"}</div>
+            <div className="settings-background flex flex-row justify-between items-center px-4 py-2 mb-1.5">
+              <div className="standard-text-color">{eng ? "Language" : "שפה"}</div>
               <div className="flex">
                 <div className="flex items-center px-3" onClick={(e) => e.stopPropagation()}>
                   <input
@@ -129,8 +130,8 @@ export default function SettingsChooser({
                 </div>
               </div>
             </div>
-            <div className="flex flex-row justify-between items-center px-4 py-2 mb-1.5 bg-[#212223]">
-              <div className="text-gray-400">{eng ? "Location" : "מיקום"}</div>
+            <div className="settings-background flex flex-row justify-between items-center px-4 py-2 mb-1.5">
+              <div className="standard-text-color">{eng ? "Location" : "מיקום"}</div>
               <div className="text-amber-400">
                 {eng
                   ? settings.location.Name
@@ -146,7 +147,7 @@ export default function SettingsChooser({
               </div>
             </div>
             <div className="flex flex-col items-center px-4">
-              <div className="px-4 py-2 mb-1.5 bg-[#212223] w-full">
+              <div className="settings-background px-4 py-2 mb-1.5 w-full">
                 <ToggleSwitch
                   text={eng ? "Show Notifications" : "הצג הודעות"}
                   onText={eng ? "Showing" : "מציג"}
@@ -155,7 +156,7 @@ export default function SettingsChooser({
                   onChange={(checked: boolean) => changeSetting({ showNotifications: checked })}
                 />
               </div>
-              <div className="px-4 py-1 mb-1.5 bg-[#212223] w-full">
+              <div className="settings-background px-4 py-1 mb-1.5 w-full">
                 <ToggleSwitch
                   text={eng ? "Show Daf Yomi" : "הצג דף היומי"}
                   onText={eng ? "Showing" : "מציג"}
@@ -164,7 +165,7 @@ export default function SettingsChooser({
                   onChange={(checked: boolean) => changeSetting({ showDafYomi: checked })}
                 />
               </div>
-              <div className="px-4 py-1 mb-1.5 bg-[#212223] w-full">
+              <div className="settings-background px-4 py-1 mb-1.5 w-full">
                 <ToggleSwitch
                   text={eng ? "24 Hour [army] Clock" : "שעון 24 שעות"}
                   onText={eng ? "Showing" : "מציג"}
@@ -174,7 +175,7 @@ export default function SettingsChooser({
                 />
               </div>
             </div>
-            <div className="flex flex-col items-start text-gray-400 px-4 py-1 mb-1.5 bg-[#212223]">
+            <div className="standard-text-color settings-background flex flex-col items-start px-4 py-1 mb-1.5">
               <ToggleSwitch
                 text={eng ? 'Show Shir-Shel-Yom of Gr"a' : 'הצג שיר של יום של הגר"א'}
                 onText={eng ? "Showing" : "מציג"}
@@ -183,8 +184,8 @@ export default function SettingsChooser({
                 onChange={(checked: boolean) => changeSetting({ showGaonShir: checked })}
               />
             </div>
-            <div className="flex flex-row justify-between items-center px-4 py-1 mb-1.5 bg-[#212223]">
-              <div className="text-gray-400">
+            <div className="settings-background flex flex-row justify-between items-center px-4 py-1 mb-1.5">
+              <div className="standard-text-color">
                 {eng ? "Minutes to show past Zmanim" : "דקות להציג זמנים שעברו"}
               </div>
               <input
@@ -195,8 +196,8 @@ export default function SettingsChooser({
                 onClick={(e) => e.stopPropagation()}
               />
             </div>
-            <div className="flex flex-row justify-between items-center px-4 py-1 mb-1.5 bg-[#212223]">
-              <div className="text-gray-400">
+            <div className="settings-background flex flex-row justify-between items-center px-4 py-1 mb-1.5">
+              <div className="standard-text-color">
                 {eng ? "Number of Zmanim to Show" : "מספר זמנים להציג"}
               </div>
               <input
@@ -207,65 +208,76 @@ export default function SettingsChooser({
                 onClick={(e) => e.stopPropagation()}
               />
             </div>
-            <div className="flex flex-row justify-between items-center px-4 py-1 mb-1.5 bg-[#212223]">
-              <div className="text-gray-400">{eng ? "Theme" : "ערכת נושא"}</div>
-              <div className="flex">
-                <div className="flex items-center px-3" onClick={(e) => e.stopPropagation()}>
-                  <input
-                    id="theme-system"
-                    type="radio"
-                    checked={settings.theme === "system"}
-                    name="theme-radio"
-                    onChange={(event) => changeSetting({ theme: "system" })}
-                    className="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500 cursor-pointer"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <label
-                    htmlFor="theme-system"
-                    className={`w-full py-3 ms-2 text-sm font-medium ${
-                      settings.theme === "system" ? "text-amber-400" : "text-blue-700"
-                    }`}>
-                    {eng ? "System" : "מערכת"}
-                  </label>
-                </div>
-                <div className="flex items-center px-3">
-                  <input
-                    id="theme-light"
-                    type="radio"
-                    checked={settings.theme === "light"}
-                    name="theme-radio"
-                    onChange={(event) => changeSetting({ theme: "light" })}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <label
-                    htmlFor="theme-light"
-                    className={`w-full py-3 ms-2 text-sm font-medium ${
-                      settings.theme === "light" ? "text-amber-400" : "text-blue-700"
-                    }`}>
-                    {eng ? "Light" : "בהיר"}
-                  </label>
-                </div>
-                <div className="flex items-center px-3">
-                  <input
-                    id="theme-dark"
-                    type="radio"
-                    checked={settings.theme === "dark"}
-                    name="theme-radio"
-                    onChange={(event) => changeSetting({ theme: "dark" })}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <label
-                    htmlFor="theme-dark"
-                    className={`w-full py-3 ms-2 text-sm font-medium ${
-                      settings.theme === "dark" ? "text-amber-400" : "text-blue-700"
-                    }`}>
-                    {eng ? "Dark" : "כהה"}
-                  </label>
+            <div className="standard-text-color settings-background flex flex-col items-start px-4 py-1 mb-1.5">
+              <ToggleSwitch
+                text={eng ? 'Automatic Color Scheme' : 'ערכת נושא אוטומטי'}
+                onText={eng ? "Auto" : "אוטומטי"}
+                offText={eng ? "Manual" : "ידני"}
+                checked={settings.autoTheme}
+                onChange={(checked: boolean) => changeSetting({ autoTheme: checked })}
+              />
+            </div>
+            {!settings.autoTheme && (
+              <div className="settings-background flex flex-row justify-between items-center px-4 py-1 mb-1.5">
+                <div className="standard-text-color">{eng ? "Theme" : "ערכת נושא"}</div>
+                <div className="flex">
+                  <div className="flex items-center px-3" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      id="theme-system"
+                      type="radio"
+                      checked={settings.theme === "system"}
+                      name="theme-radio"
+                      onChange={(event) => changeSetting({ theme: "system" })}
+                      className="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500 cursor-pointer"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <label
+                      htmlFor="theme-system"
+                      className={`w-full py-3 ms-2 text-sm font-medium ${
+                        settings.theme === "system" ? "text-amber-400" : "text-blue-700"
+                      }`}>
+                      {eng ? "System" : "מערכת"}
+                    </label>
+                  </div>
+                  <div className="flex items-center px-3">
+                    <input
+                      id="theme-light"
+                      type="radio"
+                      checked={settings.theme === "light"}
+                      name="theme-radio"
+                      onChange={(event) => changeSetting({ theme: "light" })}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <label
+                      htmlFor="theme-light"
+                      className={`w-full py-3 ms-2 text-sm font-medium ${
+                        settings.theme === "light" ? "text-amber-400" : "text-blue-700"
+                      }`}>
+                      {eng ? "Light" : "בהיר"}
+                    </label>
+                  </div>
+                  <div className="flex items-center px-3">
+                    <input
+                      id="theme-dark"
+                      type="radio"
+                      checked={settings.theme === "dark"}
+                      name="theme-radio"
+                      onChange={(event) => changeSetting({ theme: "dark" })}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <label
+                      htmlFor="theme-dark"
+                      className={`w-full py-3 ms-2 text-sm font-medium ${
+                        settings.theme === "dark" ? "text-amber-400" : "text-blue-700"
+                      }`}>
+                      {eng ? "Dark" : "כהה"}
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             <header
               className={`mt-4 p-4 font-bold text-lg flex-1 text-[#955] ${
                 eng ? "text-left" : "text-right"
@@ -273,7 +285,7 @@ export default function SettingsChooser({
               {eng ? "Zmanim to Show" : "זמנים להציג"}
             </header>
             {ZmanTypes.map((zt) => (
-              <div className="px-4 py-1 mb-1.5 text-gray-400 bg-[#212223]" key={zt.id}>
+              <div className="standard-text-color settings-background px-4 py-1 mb-1.5" key={zt.id}>
                 <ToggleSwitch
                   text={eng ? zt.eng : zt.heb}
                   onText={eng ? "Showing" : "מציג"}

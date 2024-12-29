@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Location, Locations } from "jcal-zmanim";
 import CloseButton from "../CloseButton";
+import "./index.tsx.scss";
 
 type locationChooserProps = {
   location: Location;
@@ -14,7 +15,7 @@ export default function LocationChooser({ eng, onChangeLocation, onClose }: loca
     <main className="max-w-screen-sm min-w-fit transform ease-in-out" onClick={() => onClose()}>
       <section>
         <article className="flex justify-between flex-row align-top p-2">
-          <header className="p-4 font-bold text-2xl flex-1 text-center  text-[#955]">
+          <header className="location-chooser-header-text p-4 font-bold text-2xl flex-1 text-center">
             {eng ? "Choose Location" : "בחר מקום"}
           </header>
           <CloseButton onClick={() => onClose()} />
@@ -41,7 +42,7 @@ export default function LocationChooser({ eng, onChangeLocation, onClose }: loca
       <section className="h-full flex flex-col m-3">
         {list.map((loc) => (
           <div
-            className="px-4 py-2 mb-1.5 bg-[#212223] text-gray-400 text-left  cursor-pointer"
+            className="location-chooser-item-text px-4 py-2 mb-1.5 text-left cursor-pointer"
             key={loc.Name}
             onClick={(e) => {
               e.stopPropagation();

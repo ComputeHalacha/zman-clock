@@ -25,7 +25,7 @@ export default function ToggleSwitch({
     <div
       className="flex flex-row justify-between items-center w-full"
       onClick={(e) => e.stopPropagation()}>
-      <div className="text-gray-400">{text}</div>
+      <div className="standard-text-color">{text}</div>
       <label className="relative inline-flex items-center cursor-pointer">
         <input
           type="checkbox"

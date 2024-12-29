@@ -13,6 +13,7 @@ export default class Settings {
   showDafYomi: boolean;
   english: boolean;
   armyTime: boolean;
+  autoTheme: boolean;
   /**
    *
    * @param {[{id:Number, offset: ?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }]} [zmanimToShow] List of which zmanim to show
@@ -26,6 +27,7 @@ export default class Settings {
    * @param {boolean} [showDafYomi] Show the Daf Yomi?
    * @param {boolean} [english] Show in English?
    * @param {boolean} [armyTime] Time in Army Time format?
+   * @param {boolean} [autoTheme] Should the color theme be set automtatically?
    */
   constructor(
     zmanimToShow?: ZmanToShow[],
@@ -38,7 +40,8 @@ export default class Settings {
     theme?: string,
     showDafYomi?: boolean,
     english?: boolean,
-    armyTime?: boolean
+    armyTime?: boolean,
+    autoTheme?: boolean
   ) {
     /**
      * @property {[{id:Number, offset: ?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }]} zmanimToShow List of which zmanim to show
@@ -106,6 +109,10 @@ export default class Settings {
      * @property {boolean} [armyTime] Should the time displyed be Army Time?
      */
     this.armyTime = !!Utils.setDefault(armyTime, false);
+    /**
+     * @property {boolean} [autoTheme]  Should the color theme be set automtatically?
+     */
+    this.autoTheme = !!Utils.setDefault(autoTheme, true);
   }
   clone() {
     return new Settings(
@@ -119,7 +126,8 @@ export default class Settings {
       this.theme,
       this.showDafYomi,
       this.english,
-      this.armyTime
+      this.armyTime,
+      this.autoTheme
     );
   }
 }

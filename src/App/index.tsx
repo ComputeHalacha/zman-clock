@@ -105,6 +105,14 @@ export default function App() {
     setNeedsNotificationsRefresh(true);
     setNeedsFullRefresh(true);
   };
+  const setAutoTheme = (isNight: boolean) => {
+    if (settings.autoTheme && settings.theme !== (isNight ? "dark" : "light")) {
+      setSettings({
+        ...settings,
+        theme: isNight ? "dark" : "light",
+      } as Settings);
+    }
+  };
   const refresh = () => {
     const sd = new Date(),
       nowTime = Utils.timeFromDate(sd);
@@ -144,11 +152,16 @@ export default function App() {
     const { alos, shkia } = shulZmanim,
       isBeforeAlos = Utils.isTimeAfter(nowTime, alos),
       isAfterShkia = Utils.isTimeAfter(shkia, nowTime),
-      isNight = isBeforeAlos && isAfterShkia,
-      beinHashmashos = isNight && Utils.isTimeAfter(nowTime, Utils.addMinutes(shkia, 20));
+      isNight = isBeforeAlos || isAfterShkia, //Note after 12 AM isAfterShkia will return false
+      beinHashmashos = isAfterShkia && Utils.isTimeAfter(nowTime, Utils.addMinutes(shkia, 20));
 
+    setAutoTheme(isNight);
     setIsNightTime(isNight);
     setIsBeinHashmashos(beinHashmashos);
+  };
+
+  const changeSettings = () => {
+    setNeedsFullRefresh(true);
   };
 
   const isPastShulZman = () => {
@@ -165,6 +178,7 @@ export default function App() {
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
         shulZmanim.chatzosHalayla = undefined;
       }
+      setAutoTheme(isNightTime);
       console.log("Refreshing notifications due to shkia.");
       return true;
     } else if (chatzosHayom && Utils.isTimeAfter(chatzosHayom, nowTime)) {
@@ -184,6 +198,7 @@ export default function App() {
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
         shulZmanim.chatzosHalayla = undefined;
       }
+      setAutoTheme(isNightTime);
       console.log("Refreshing notifications due to alos.");
       return true;
     } else if (chatzosHalayla && Utils.isTimeAfter(chatzosHalayla, nowTime)) {
@@ -207,6 +222,7 @@ export default function App() {
         );
         setNeedsNotificationsRefresh(false);
         setNotifications(notifications);
+        setAutoTheme(isNightTime);
         console.log("Refreshing notifications: ", jdate, sdate, currentTime);
       }
     } else if (
@@ -452,7 +468,7 @@ export default function App() {
         </div>
         <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
           <SettingsChooser
-            onChangeSettings={() => setNeedsFullRefresh(true)}
+            onChangeSettings={changeSettings}
             onClose={() => {
               setShowLocation(false);
               setIsDrawerOpen(false);

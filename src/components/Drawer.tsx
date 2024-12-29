@@ -16,7 +16,7 @@ export default function Drawer({ children, isOpen, setIsOpen }: DrawerProps) {
       }>
       <section
         className={
-          "left-0 absolute border border-zinc-800 rounded-r shadow bg-zinc-800 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  " +
+          "drawer-background-color left-0 absolute border border-zinc-800 rounded-r shadow h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  " +
           (isOpen ? "translate-x-0 " : " -translate-x-full ")
         }>
         <article className="relative border border-zinc-800 rounded-r shadow pb-10 flex flex-col space-y-6 overflow-y-scroll h-full">

@@ -91,3 +91,10 @@ code {
 .card {
   padding: 2em;
 }
+
+.standard-text-color{
+  color:var(--standard-text-color);
+}
+.drawer-background-color{
+  background-color: var(--drawer-background-color);
+}

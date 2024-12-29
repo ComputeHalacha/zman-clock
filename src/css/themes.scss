@@ -27,6 +27,8 @@
     --time-text-color: #383366;
     --help-modal-outside-color:var(--color-background);
     --help-modal-outside-text-color:#544;
+    --help-modal-inside-text-color:#433;    
+    --help-modal-inside-bg-color:#bbc;
   }
   
   [data-theme="dark"] {
@@ -58,4 +60,6 @@
     --time-text-color: #559955;
     --help-modal-outside-color: #343434;
     --help-modal-outside-text-color:#877;
+    --help-modal-inside-text-color:#888;
+    --help-modal-inside-bg-color: #212223;
   }

@@ -28,19 +28,19 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
           english ? "left" : "right"
         } ${isOpen ? "translate-y-0" : "-translate-y-full"}`}>
         <div className="help-modal-outside-color px-4 pt-5 pb-4 sm:p-6 sm:pb-4 h-[800px] max-h-[85vh] overflow-hidden">
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row justify-between items-center text-center">
             <img src={favicon} alt="Zman Clock" className="h-10 w-10" />
             <h3 className="text-lg leading-6 font-large font-bold text-gray-500">
               {english ? "Zman Clock" : "שעון זמנים"}
             </h3>
             <CloseButton onClick={() => onClose()} />
           </div>
-          <div className="help-modal-outside-text-color text-xs text-center">Version {version}</div>
+          <div className="help-modal-outside-color text-xs text-center">Version {version}</div>
           <div
-            className="mt-2 text-sm text-gray-400 bg-[#212223] max-h-[80%] p-3 overflow-y-scroll"
+            className="help-modal-inside mt-2 text-sm max-h-[80%] p-3 overflow-y-scroll"
             onClick={(e) => e.stopPropagation()}>
             {english ? (
-              <>
+              <div style={{ direction: "ltr" }}>
                 <p>
                   Zman Clock is a Halachic Zmanim clock that shows a list of upcoming Zmanim and how
                   much time remains until that Zman.
@@ -120,9 +120,9 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
                   </li>
                   <li>The maximum number of Zmanim to be shown at one time.</li>
                 </ul>
-              </>
+              </div>
             ) : (
-              <>
+              <div style={{ direction: "rtl" }}>
                 <p>
                   שעון זמנם הוא שעון הלכתי לזמנים שמראה רשימה של זמני היום הקרובים וכמה זמן נותר עד
                   אותו זמן.
@@ -173,7 +173,7 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
                   <li>כמה דקות לאחר זמן פעיל שחלף להמשיך להציג את ההודעה.</li>
                   <li>המספר המרבי של זמנים שיוצגו בבת אחת.</li>
                 </ul>
-              </>
+              </div>
             )}
           </div>
         </div>

@@ -12,7 +12,7 @@ type locationChooserProps = {
 export default function LocationChooser({ eng, onChangeLocation, onClose }: locationChooserProps) {
   const [list, setList] = useState(Locations);
   return (
-    <main className="max-w-screen-sm min-w-fit transform ease-in-out" onClick={() => onClose()}>
+    <main className="location-chooser max-w-screen-sm min-w-fit transform ease-in-out" onClick={() => onClose()}>
       <section>
         <article className="flex justify-between flex-row align-top p-2">
           <header className="location-chooser-header-text p-4 font-bold text-2xl flex-1 text-center">

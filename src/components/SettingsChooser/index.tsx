@@ -49,7 +49,7 @@ export default function SettingsChooser({
   }
 
   return (
-    <main style={{ direction: "ltr" }} onClick={() => onClose()}>
+    <main className="settings-chooser" style={{ direction: "ltr" }} onClick={() => onClose()}>
       {showLocationChooser ? (
         <section className="h-full w-full">
           <LocationChooser

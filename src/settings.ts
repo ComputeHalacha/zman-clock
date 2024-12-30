@@ -1,4 +1,4 @@
-import { Location, findLocation, ZmanTypeIds, getZmanType, Utils } from "jcal-zmanim";
+import { Location, findLocation, ZmanTypeIds, getZmanType, Utils, Zmanim } from "jcal-zmanim";
 import type { ZmanToShow } from "jcal-zmanim";
 
 export default class Settings {
@@ -114,20 +114,38 @@ export default class Settings {
      */
     this.autoTheme = !!Utils.setDefault(autoTheme, true);
   }
-  clone() {
-    return new Settings(
-      [...this.zmanimToShow],
-      [...this.customZmanim],
-      this.location,
-      this.showNotifications,
-      this.numberOfItemsToShow,
-      this.minToShowPassedZman,
-      this.showGaonShir,
-      this.theme,
-      this.showDafYomi,
-      this.english,
-      this.armyTime,
-      this.autoTheme
-    );
-  }
 }
+
+/**
+ * @param {Location} location
+ * @returns Determines  whether or not it is night time right now at the given location
+ */
+export const isItCurrentlyNightTime = (location: Location): boolean => {
+  const sd = new Date(),
+    nowTime = Utils.timeFromDate(sd),
+    { sunset, sunrise } = Zmanim.getSunTimes(sd, location),
+    isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
+    isAfterShkia = Utils.isTimeAfter(sunset, nowTime),
+    isNight = isBeforeAlos || isAfterShkia;
+  return isNight;
+};
+
+/**
+ * @param settings 
+ * @returns A full clone of the given Setting object
+ */
+export const clone = (settings: Settings): Settings =>
+  new Settings(
+    [...settings.zmanimToShow],
+    [...settings.customZmanim],
+    settings.location,
+    settings.showNotifications,
+    settings.numberOfItemsToShow,
+    settings.minToShowPassedZman,
+    settings.showGaonShir,
+    settings.theme,
+    settings.showDafYomi,
+    settings.english,
+    settings.armyTime,
+    settings.autoTheme
+  );

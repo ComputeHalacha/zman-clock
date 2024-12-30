@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, PropsWithChildren } from "react";
-import Settings from "./settings";
-import { Location, Utils, Zmanim } from "jcal-zmanim";
+import Settings, { isItCurrentlyNightTime } from "./settings";
 
 const __DEV__ = true;
 
@@ -11,18 +10,11 @@ interface SettingsContextType {
   getCurrentTheme: () => "light" | "dark";
 }
 
-const isItCurrentlyNightTime = (location: Location) => {
-  const sd = new Date(),
-    nowTime = Utils.timeFromDate(sd),
-    { sunset, sunrise } = Zmanim.getSunTimes(sd, location),
-    isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
-    isAfterShkia = Utils.isTimeAfter(sunset, nowTime),
-    isNight = isBeforeAlos || isAfterShkia;
-  return isNight;
-};
-
 const getCurrentTheme = () =>
   (document.documentElement.getAttribute("data-theme") as "light" | "dark") || "light";
+
+const setCurrentTheme = (theme: "light" | "dark") =>
+  document.documentElement.setAttribute("data-theme", theme);
 
 const initialSettings = new Settings();
 const SettingsContext = createContext<SettingsContextType>({
@@ -38,37 +30,45 @@ export const SettingsProvider = (props: PropsWithChildren) => {
   useEffect(() => {
     const s = localStorage.getItem("Settings");
     if (s) {
-      const settingsFromStorage = JSON.parse(s);
-      if (settingsFromStorage.autoTheme) {
-        settingsFromStorage.theme = isItCurrentlyNightTime(settingsFromStorage.location)
-          ? "dark"
-          : "light";
-      }
+      const settingsFromStorage = JSON.parse(s) as Settings;
       setStateSettings(settingsFromStorage);
       __DEV__ && console.log("get local storage settings", settingsFromStorage);
     }
   }, []);
 
-  useEffect(() => {
-    const applyTheme = (theme: string) => {
-      if (theme === "system") {
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-        document.documentElement.setAttribute("data-theme", systemTheme);
-      } else {
-        document.documentElement.setAttribute("data-theme", theme);
-      }
-    };
-
-    applyTheme(settings.theme);
-  }, [settings.theme]);
+  useEffect(() => {    
+    applyColorTheme()    
+  }, [settings.autoTheme, settings.location, settings.theme]);
 
   const setSettings = async (s: Settings) => {
     const sStr = JSON.stringify(s);
     localStorage.setItem("Settings", sStr);
     setStateSettings(s);
     __DEV__ && console.log("set localstorage settings", s);
+  };
+
+  const applyColorTheme = async () => {
+    const current = getCurrentTheme();
+    if (settings?.autoTheme) {
+      const correctAutoTheme = isItCurrentlyNightTime(settings.location) ? "dark" : "light";
+      if (settings.theme !== correctAutoTheme) {
+        await setSettings({ ...settings, theme: correctAutoTheme });
+      }
+      if (current !== correctAutoTheme) {
+        setCurrentTheme(correctAutoTheme);
+      }
+    } else {
+      if (settings.theme === "system") {
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+        if (current !== systemTheme) {
+          setCurrentTheme(systemTheme);
+        }
+      } else if (current !== settings.theme) {
+        setCurrentTheme(settings.theme as "light" | "dark");
+      }
+    }
   };
 
   const resetZmanimToShowSettings = async () => {

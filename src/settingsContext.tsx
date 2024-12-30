@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, PropsWithChildren } from "react";
 import Settings from "./settings";
-import { jDate, Location, Utils, Zmanim } from "jcal-zmanim";
+import { Location, Utils, Zmanim } from "jcal-zmanim";
 
 const __DEV__ = true;
 
@@ -8,15 +8,28 @@ interface SettingsContextType {
   settings: Settings;
   setSettings(settings: Settings): Promise<void>;
   resetZmanimToShowSettings(): Promise<void>;
-  isItCurrentlyNightTime(location: Location): boolean;
+  getCurrentTheme: () => "light" | "dark";
 }
+
+const isItCurrentlyNightTime = (location: Location) => {
+  const sd = new Date(),
+    nowTime = Utils.timeFromDate(sd),
+    { sunset, sunrise } = Zmanim.getSunTimes(sd, location),
+    isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
+    isAfterShkia = Utils.isTimeAfter(sunset, nowTime),
+    isNight = isBeforeAlos || isAfterShkia;
+  return isNight;
+};
+
+const getCurrentTheme = () =>
+  (document.documentElement.getAttribute("data-theme") as "light" | "dark") || "light";
 
 const initialSettings = new Settings();
 const SettingsContext = createContext<SettingsContextType>({
   settings: initialSettings,
   setSettings: async (_: Settings) => {},
   resetZmanimToShowSettings: async () => {},
-  isItCurrentlyNightTime: (_: Location): boolean => false,
+  getCurrentTheme,
 });
 
 export const SettingsProvider = (props: PropsWithChildren) => {
@@ -27,7 +40,9 @@ export const SettingsProvider = (props: PropsWithChildren) => {
     if (s) {
       const settingsFromStorage = JSON.parse(s);
       if (settingsFromStorage.autoTheme) {
-        settingsFromStorage.theme = (isItCurrentlyNightTime(settingsFromStorage.location) ? "dark" : "light");
+        settingsFromStorage.theme = isItCurrentlyNightTime(settingsFromStorage.location)
+          ? "dark"
+          : "light";
       }
       setStateSettings(settingsFromStorage);
       __DEV__ && console.log("get local storage settings", settingsFromStorage);
@@ -62,24 +77,14 @@ export const SettingsProvider = (props: PropsWithChildren) => {
     localStorage.removeItem("Settings");
     await setSettings(newSettings);
   };
-  
-  const isItCurrentlyNightTime = (location: Location) => {
-    const sd = new Date(),
-      nowTime = Utils.timeFromDate(sd),
-      { sunset, sunrise } = Zmanim.getSunTimes(sd, location),
-      isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
-      isAfterShkia = Utils.isTimeAfter(sunset, nowTime),
-      isNight = isBeforeAlos || isAfterShkia;
-    return isNight;
-  };
 
   return (
     <SettingsContext.Provider
       value={{
         settings,
         setSettings,
+        getCurrentTheme,
         resetZmanimToShowSettings,
-        isItCurrentlyNightTime,
       }}>
       {props.children}
     </SettingsContext.Provider>

@@ -19,7 +19,7 @@ export default function SettingsChooser({
   onClose,
   showLocation,
 }: SettingsChooserProps) {
-  const { settings, setSettings, resetZmanimToShowSettings } = useSettingsData();
+  const { settings, setSettings, resetZmanimToShowSettings, getCurrentTheme } = useSettingsData();
   const [showLocationChooser, setShowLocationChooser] = useState(showLocation);
   const eng = settings.english;
 
@@ -99,13 +99,13 @@ export default function SettingsChooser({
                     checked={eng}
                     name="list-radio"
                     onChange={(event) => changeSetting({ english: event.target.checked })}
-                    className="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500 cursor-pointer"
+                    className="w-4 h-4 cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                   />
                   <label
                     htmlFor="horizontal-list-eng"
                     className={`w-full py-3 ms-2 text-sm font-medium ${
-                      eng ? "selected-text-color" : "text-blue-700"
+                      eng ? "selected-text-color" : "unselected-text-color"
                     }`}>
                     English
                   </label>
@@ -117,13 +117,13 @@ export default function SettingsChooser({
                     checked={!eng}
                     name="list-radio"
                     onChange={(event) => changeSetting({ english: !event.target.checked })}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
+                    className="w-4 h-4 cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                   />
                   <label
                     htmlFor="horizontal-list-heb"
                     className={`w-full py-3 ms-2 text-sm font-medium ${
-                      eng ? "text-blue-700" : "selected-text-color"
+                      eng ? "unselected-text-color" : "selected-text-color"
                     }`}>
                     עברית
                   </label>
@@ -138,7 +138,7 @@ export default function SettingsChooser({
                   : settings.location.NameHebrew || settings.location.Name}
               </div>
               <div
-                className="ms-3 text-sm font-medium text-blue-700 cursor-pointer"
+                className="ms-3 text-sm font-medium unselected-text-color cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowLocationChooser(true);
@@ -149,6 +149,7 @@ export default function SettingsChooser({
             <div className="flex flex-col items-center px-4">
               <div className="settings-background px-4 py-2 mb-1.5 w-full">
                 <ToggleSwitch
+                  theme={getCurrentTheme()}
                   text={eng ? "Show Notifications" : "הצג הודעות"}
                   onText={eng ? "Showing" : "מציג"}
                   offText={eng ? "Not Showing" : "לא מציג"}
@@ -158,6 +159,7 @@ export default function SettingsChooser({
               </div>
               <div className="settings-background px-4 py-1 mb-1.5 w-full">
                 <ToggleSwitch
+                  theme={getCurrentTheme()}
                   text={eng ? "Show Daf Yomi" : "הצג דף היומי"}
                   onText={eng ? "Showing" : "מציג"}
                   offText={eng ? "Not Showing" : "לא מציג"}
@@ -167,6 +169,7 @@ export default function SettingsChooser({
               </div>
               <div className="settings-background px-4 py-1 mb-1.5 w-full">
                 <ToggleSwitch
+                  theme={getCurrentTheme()}
                   text={eng ? "24 Hour [army] Clock" : "שעון 24 שעות"}
                   onText={eng ? "Showing" : "מציג"}
                   offText={eng ? "Not Showing" : "לא מציג"}
@@ -177,6 +180,7 @@ export default function SettingsChooser({
             </div>
             <div className="standard-text-color settings-background flex flex-col items-start px-4 py-1 mb-1.5">
               <ToggleSwitch
+                theme={getCurrentTheme()}
                 text={eng ? 'Show Shir-Shel-Yom of Gr"a' : 'הצג שיר של יום של הגר"א'}
                 onText={eng ? "Showing" : "מציג"}
                 offText={eng ? "Not Showing" : "לא מציג"}
@@ -210,7 +214,8 @@ export default function SettingsChooser({
             </div>
             <div className="standard-text-color settings-background flex flex-col items-start px-4 py-1 mb-1.5">
               <ToggleSwitch
-                text={eng ? 'Automatic Color Scheme' : 'ערכת נושא אוטומטי'}
+                theme={getCurrentTheme()}
+                text={eng ? "Automatic Color Scheme" : "ערכת צבעים אוטומטי"}
                 onText={eng ? "Auto" : "אוטומטי"}
                 offText={eng ? "Manual" : "ידני"}
                 checked={settings.autoTheme}
@@ -219,7 +224,7 @@ export default function SettingsChooser({
             </div>
             {!settings.autoTheme && (
               <div className="settings-background flex flex-row justify-between items-center px-4 py-1 mb-1.5">
-                <div className="standard-text-color">{eng ? "Theme" : "ערכת נושא"}</div>
+                <div className="standard-text-color">{eng ? "Color Scheme" : "ערכת צבעים"}</div>
                 <div className="flex">
                   <div className="flex items-center px-3" onClick={(e) => e.stopPropagation()}>
                     <input
@@ -228,13 +233,15 @@ export default function SettingsChooser({
                       checked={settings.theme === "system"}
                       name="theme-radio"
                       onChange={(event) => changeSetting({ theme: "system" })}
-                      className="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500 cursor-pointer"
+                      className="w-4 h-4 cursor-pointer"
                       onClick={(e) => e.stopPropagation()}
                     />
                     <label
                       htmlFor="theme-system"
                       className={`w-full py-3 ms-2 text-sm font-medium ${
-                        settings.theme === "system" ? "text-amber-400" : "text-blue-700"
+                        settings.theme === "system"
+                          ? "selected-text-color"
+                          : "unselected-text-color"
                       }`}>
                       {eng ? "System" : "מערכת"}
                     </label>
@@ -246,13 +253,13 @@ export default function SettingsChooser({
                       checked={settings.theme === "light"}
                       name="theme-radio"
                       onChange={(event) => changeSetting({ theme: "light" })}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
+                      className="w-4 h-4 cursor-pointer"
                       onClick={(e) => e.stopPropagation()}
                     />
                     <label
                       htmlFor="theme-light"
                       className={`w-full py-3 ms-2 text-sm font-medium ${
-                        settings.theme === "light" ? "text-amber-400" : "text-blue-700"
+                        settings.theme === "light" ? "selected-text-color" : "unselected-text-color"
                       }`}>
                       {eng ? "Light" : "בהיר"}
                     </label>
@@ -264,13 +271,13 @@ export default function SettingsChooser({
                       checked={settings.theme === "dark"}
                       name="theme-radio"
                       onChange={(event) => changeSetting({ theme: "dark" })}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
+                      className="w-4 h-4 cursor-pointer"
                       onClick={(e) => e.stopPropagation()}
                     />
                     <label
                       htmlFor="theme-dark"
                       className={`w-full py-3 ms-2 text-sm font-medium ${
-                        settings.theme === "dark" ? "text-amber-400" : "text-blue-700"
+                        settings.theme === "dark" ? "selected-text-color" : "unselected-text-color"
                       }`}>
                       {eng ? "Dark" : "כהה"}
                     </label>
@@ -287,6 +294,7 @@ export default function SettingsChooser({
             {ZmanTypes.map((zt) => (
               <div className="standard-text-color settings-background px-4 py-1 mb-1.5" key={zt.id}>
                 <ToggleSwitch
+                  theme={getCurrentTheme()}
                   text={eng ? zt.eng : zt.heb}
                   onText={eng ? "Showing" : "מציג"}
                   offText={eng ? "Not Showing" : "לא מציג"}

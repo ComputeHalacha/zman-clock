@@ -27,7 +27,7 @@ export default class Settings {
    * @param {boolean} [showDafYomi] Show the Daf Yomi?
    * @param {boolean} [english] Show in English?
    * @param {boolean} [armyTime] Time in Army Time format?
-   * @param {boolean} [autoTheme] Should the color theme be set automtatically?
+   * @param {boolean} [autoTheme] Should the color scheme be set automtatically?
    */
   constructor(
     zmanimToShow?: ZmanToShow[],
@@ -110,7 +110,7 @@ export default class Settings {
      */
     this.armyTime = !!Utils.setDefault(armyTime, false);
     /**
-     * @property {boolean} [autoTheme]  Should the color theme be set automtatically?
+     * @property {boolean} [autoTheme]  Should the color scheme be set automtatically?
      */
     this.autoTheme = !!Utils.setDefault(autoTheme, true);
   }

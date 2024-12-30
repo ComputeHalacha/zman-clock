@@ -105,7 +105,7 @@ export default function SettingsChooser({
                   <label
                     htmlFor="horizontal-list-eng"
                     className={`w-full py-3 ms-2 text-sm font-medium ${
-                      eng ? "text-amber-400" : "text-blue-700"
+                      eng ? "selected-text-color" : "text-blue-700"
                     }`}>
                     English
                   </label>
@@ -123,7 +123,7 @@ export default function SettingsChooser({
                   <label
                     htmlFor="horizontal-list-heb"
                     className={`w-full py-3 ms-2 text-sm font-medium ${
-                      eng ? "text-blue-700" : "text-amber-400"
+                      eng ? "text-blue-700" : "selected-text-color"
                     }`}>
                     עברית
                   </label>
@@ -132,7 +132,7 @@ export default function SettingsChooser({
             </div>
             <div className="settings-background flex flex-row justify-between items-center px-4 py-2 mb-1.5">
               <div className="standard-text-color">{eng ? "Location" : "מיקום"}</div>
-              <div className="text-amber-400">
+              <div className="selected-text-color">
                 {eng
                   ? settings.location.Name
                   : settings.location.NameHebrew || settings.location.Name}
@@ -191,7 +191,7 @@ export default function SettingsChooser({
               <input
                 type="number"
                 value={settings.minToShowPassedZman}
-                className="text-amber-400 w-1/5 rounded text-center bg-[#292928]"
+                className="selected-text-color input-background-color w-1/5 rounded text-center"
                 onChange={(e) => changeSetting({ minToShowPassedZman: parseInt(e.target.value) })}
                 onClick={(e) => e.stopPropagation()}
               />
@@ -203,7 +203,7 @@ export default function SettingsChooser({
               <input
                 type="number"
                 value={settings.numberOfItemsToShow}
-                className="text-amber-400  w-1/5 rounded text-center bg-[#292928]"
+                className="selected-text-color input-background-color w-1/5 rounded text-center"
                 onChange={(e) => changeSetting({ numberOfItemsToShow: parseInt(e.target.value) })}
                 onClick={(e) => e.stopPropagation()}
               />

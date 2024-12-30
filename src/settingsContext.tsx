@@ -62,6 +62,7 @@ export const SettingsProvider = (props: PropsWithChildren) => {
     localStorage.removeItem("Settings");
     await setSettings(newSettings);
   };
+  
   const isItCurrentlyNightTime = (location: Location) => {
     const sd = new Date(),
       nowTime = Utils.timeFromDate(sd),

@@ -1,43 +1,44 @@
 import React, { createContext, useContext, useEffect, useState, PropsWithChildren } from "react";
 import Settings, { isItCurrentlyNightTime } from "./settings";
 
-const __DEV__ = true;
+const __DEV__ = import.meta.env.DEV;
 
 interface SettingsContextType {
   settings: Settings;
   setSettings(settings: Settings): Promise<void>;
   resetZmanimToShowSettings(): Promise<void>;
-  getCurrentTheme: () => "light" | "dark";
+  getCurrentTheme: () => "light" | "dark" | undefined;
+  applyColorTheme: (isNight?: boolean) => Promise<void>;
 }
 
 const getCurrentTheme = () =>
-  (document.documentElement.getAttribute("data-theme") as "light" | "dark") || "light";
+  document.documentElement.getAttribute("data-theme") as "light" | "dark" | undefined;
 
 const setCurrentTheme = (theme: "light" | "dark") =>
   document.documentElement.setAttribute("data-theme", theme);
 
-const initialSettings = new Settings();
+let initialSettings: Settings;
+
+const storageSettings = localStorage.getItem("Settings");
+if (storageSettings) {
+  initialSettings = JSON.parse(storageSettings);
+} else {
+  initialSettings = new Settings();
+}
+
 const SettingsContext = createContext<SettingsContextType>({
   settings: initialSettings,
   setSettings: async (_: Settings) => {},
   resetZmanimToShowSettings: async () => {},
   getCurrentTheme,
+  applyColorTheme: async () => {},
 });
 
 export const SettingsProvider = (props: PropsWithChildren) => {
-  const [settings, setStateSettings] = useState<Settings>(new Settings());
+  const [settings, setStateSettings] = useState<Settings>(initialSettings);
 
   useEffect(() => {
-    const s = localStorage.getItem("Settings");
-    if (s) {
-      const settingsFromStorage = JSON.parse(s) as Settings;
-      setStateSettings(settingsFromStorage);
-      __DEV__ && console.log("get local storage settings", settingsFromStorage);
-    }
-  }, []);
-
-  useEffect(() => {    
-    applyColorTheme()    
+    applyColorTheme();
   }, [settings.autoTheme, settings.location, settings.theme]);
 
   const setSettings = async (s: Settings) => {
@@ -47,10 +48,15 @@ export const SettingsProvider = (props: PropsWithChildren) => {
     __DEV__ && console.log("set localstorage settings", s);
   };
 
-  const applyColorTheme = async () => {
+  const applyColorTheme = async (isNight?: boolean) => {
     const current = getCurrentTheme();
     if (settings?.autoTheme) {
-      const correctAutoTheme = isItCurrentlyNightTime(settings.location) ? "dark" : "light";
+      let correctAutoTheme: "light" | "dark";
+      if (typeof isNight === "boolean") {
+        correctAutoTheme = isNight ? "dark" : "light";
+      } else {
+        correctAutoTheme = isItCurrentlyNightTime(settings.location) ? "dark" : "light";
+      }
       if (settings.theme !== correctAutoTheme) {
         await setSettings({ ...settings, theme: correctAutoTheme });
       }
@@ -85,6 +91,7 @@ export const SettingsProvider = (props: PropsWithChildren) => {
         setSettings,
         getCurrentTheme,
         resetZmanimToShowSettings,
+        applyColorTheme,
       }}>
       {props.children}
     </SettingsContext.Provider>

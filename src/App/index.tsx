@@ -14,7 +14,6 @@ import {
 import { useSettingsData } from "../settingsContext";
 import Settings from "../settings";
 import { SingleZman } from "../components/SingleZman";
-import Drawer from "../components/Drawer";
 import SettingsChooser from "../components/SettingsChooser";
 import FullScreen from "../components/FullScreen";
 import Sidebar from "../components/Sidebar";
@@ -22,11 +21,13 @@ import HelpModal from "../components/HelpModal";
 import type { SunTimes, Time, ShulZmanimType, ZmanTime, ZmanToShow, Location } from "jcal-zmanim";
 import "./index.tsx.scss";
 
+const __DEV__ = import.meta.env.DEV;
+
 export default function App() {
   const initialSettings = new Settings();
   const initialSDate = new Date();
   const initialJdate = new jDate(initialSDate);
-  const { settings, setSettings } = useSettingsData();
+  const { settings, setSettings, applyColorTheme } = useSettingsData();
 
   const [sdate, setSdate] = useState<Date>(initialSDate);
   const [jdate, setJdate] = useState<jDate>(initialJdate);
@@ -106,12 +107,7 @@ export default function App() {
     setNeedsFullRefresh(true);
   };
   const setAutoTheme = (isNight: boolean) => {
-    if (settings.autoTheme && settings.theme !== (isNight ? "dark" : "light")) {
-      setSettings({
-        ...settings,
-        theme: isNight ? "dark" : "light",
-      } as Settings);
-    }
+    applyColorTheme(isNight);
   };
   const refresh = () => {
     const sd = new Date(),
@@ -125,7 +121,7 @@ export default function App() {
       setCurrentTime(nowTime);
       setJdate(jdate);
     } else {
-      console.log("Refreshing all zmanim");
+      __DEV__ && console.log("Refreshing all zmanim");
       const sunset = Zmanim.getSunTimes(sd, settings.location).sunset,
         jdate = Utils.isTimeAfter(sunset, nowTime)
           ? new jDate(Utils.addDaysToSdate(sd, 1))
@@ -179,7 +175,7 @@ export default function App() {
         shulZmanim.chatzosHalayla = undefined;
       }
       setAutoTheme(isNightTime);
-      console.log("Refreshing notifications due to shkia.");
+      __DEV__ && console.log("Refreshing notifications due to shkia.");
       return true;
     } else if (chatzosHayom && Utils.isTimeAfter(chatzosHayom, nowTime)) {
       //We only want to refresh the notifications one time
@@ -189,7 +185,7 @@ export default function App() {
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
         shulZmanim.chatzosHalayla = undefined;
       }
-      console.log("Refreshing notifications due to chatzos hayom.");
+      __DEV__ && console.log("Refreshing notifications due to chatzos hayom.");
       return true;
     } else if (alos && Utils.isTimeAfter(alos, nowTime)) {
       //We only want to refresh the notifications one time
@@ -199,12 +195,12 @@ export default function App() {
         shulZmanim.chatzosHalayla = undefined;
       }
       setAutoTheme(isNightTime);
-      console.log("Refreshing notifications due to alos.");
+      __DEV__ && console.log("Refreshing notifications due to alos.");
       return true;
     } else if (chatzosHalayla && Utils.isTimeAfter(chatzosHalayla, nowTime)) {
       //We only want to refresh the notifications one time
       shulZmanim.chatzosHalayla = undefined;
-      console.log("Refreshing notifications due to chatzosHalayla.");
+      __DEV__ && console.log("Refreshing notifications due to chatzosHalayla.");
       return true;
     }
     return false;
@@ -223,7 +219,7 @@ export default function App() {
         setNeedsNotificationsRefresh(false);
         setNotifications(notifications);
         setAutoTheme(isNightTime);
-        console.log("Refreshing notifications: ", jdate, sdate, currentTime);
+        __DEV__ && console.log("Refreshing notifications: ", jdate, sdate, currentTime);
       }
     } else if (
       notifications &&
@@ -466,16 +462,16 @@ export default function App() {
               ))}
           </div>
         </div>
-        <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
-          <SettingsChooser
-            onChangeSettings={changeSettings}
-            onClose={() => {
-              setShowLocation(false);
-              setIsDrawerOpen(false);
-            }}
-            showLocation={showLocation}
-          />
-        </Drawer>
+        <SettingsChooser
+          isOpen={isDrawerOpen}
+          setIsOpen={setIsDrawerOpen}
+          onChangeSettings={changeSettings}
+          onClose={() => {
+            setShowLocation(false);
+            setIsDrawerOpen(false);
+          }}
+          showLocation={showLocation}
+        />
       </div>{" "}
       <FullScreen
         isOpen={isFullScreenOpen}

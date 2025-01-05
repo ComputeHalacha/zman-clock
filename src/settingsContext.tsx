@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, PropsWithChildren } from "react";
-import Settings, { isItCurrentlyNightTime } from "./settings";
+import Settings from "./settings";
+import { Utils, Zmanim, Location } from "jcal-zmanim";
 
 const __DEV__ = import.meta.env.DEV;
 
@@ -11,11 +12,37 @@ interface SettingsContextType {
   applyColorTheme: (isNight?: boolean) => Promise<void>;
 }
 
+/**
+ * @returns The current theme of the app
+ */
 const getCurrentTheme = () =>
   document.documentElement.getAttribute("data-theme") as "light" | "dark" | undefined;
 
+/**
+ * @param {"light" | "dark"} theme 
+ * @returns Sets the current theme of the app
+ */
 const setCurrentTheme = (theme: "light" | "dark") =>
   document.documentElement.setAttribute("data-theme", theme);
+
+/**
+ * @param {Location} location
+ * @returns Determines  whether or not it is night time right now at the given location
+ */
+const isItCurrentlyNightTime = (location: Location) => {
+  let isNight = false;
+  const sd = new Date(),
+    nowTime = Utils.timeFromDate(sd),
+    { sunset, sunrise } = Zmanim.getSunTimes(sd, location);
+  if (sunrise && sunset) {
+    const isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
+      isAfterShkia = Utils.isTimeAfter(sunset, nowTime);
+    isNight = isBeforeAlos || isAfterShkia;
+  } else {
+    isNight = nowTime.hour > 18 || nowTime.hour < 6;
+  }
+  return isNight;
+}
 
 let initialSettings: Settings;
 

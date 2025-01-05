@@ -2,6 +2,7 @@ import React from "react";
 import { useSettingsData } from "../../settingsContext";
 import { Utils } from "jcal-zmanim";
 import type { Time, ZmanTime } from "jcal-zmanim";
+import TimeIntervalText from "../TimeIntervalText";
 import "./index.tsx.scss";
 
 interface SingleZManProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -44,9 +45,7 @@ const SingleZman: React.FC<SingleZManProps> = (props: SingleZManProps) => {
       <div
         className={english ? "time-remaining-text-eng" : "time-remaining-text"}
         style={{ color: timeRemainingColor }}>
-        {english
-          ? Utils.getTimeIntervalTextString(timeDiff)
-          : Utils.getTimeIntervalTextStringHeb(timeDiff)}
+        <TimeIntervalText time={timeDiff} hebrew={!english} />
       </div>
       <span
         className={

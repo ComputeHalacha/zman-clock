@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useSettingsData } from "../../settingsContext";
 import { Time, Utils, ZmanTime } from "jcal-zmanim";
+import { useSettingsData } from "../../settingsContext";
+import TimeIntervalText from "../TimeIntervalText";
 import CloseButton from "../CloseButton";
 import "./index.tsx.css";
 
@@ -44,16 +45,17 @@ export default function FullScreen({
       gotoNextZman();
     }
     setScrollPosition(position);
-  }
+  }  
 
   return (
-    <main onClick={() => setIsOpen(false)}
-      className={
-        "fixed top-0 left-0 h-full w-full z-10 bg-gray-900 bg-opacity-25 inset-0 transform ease-in-out " +
-        (isOpen
-          ? "transition-opacity opacity-100 duration-500 translate-x-0  "
-          : "transition-all delay-500 opacity-0 -translate-x-full  ")
-      }>
+    <main
+      onClick={() => setIsOpen(false)}
+      className={`fixed top-0 left-0 h-full w-full z-10 bg-gray-900 bg-opacity-25 inset-0 transform ease-in-out
+        ${
+          isOpen
+            ? "transition-opacity opacity-100 duration-500 translate-x-0"
+            : "transition-all delay-500 opacity-0 -translate-x-full"
+        } app-${settings.english ? "eng" : "heb"}`}>
       <section
         className={
           "left-0 absolute border border-zinc-800 rounded-r shadow bg-zinc-800 h-full w-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  " +
@@ -89,10 +91,9 @@ export default function FullScreen({
                   english ? "fullscreen-time-remaining-text-eng" : "fullscreen-time-remaining-text"
                 }
                 style={{ color: timeRemainingColor }}>
-                {english
-                  ? Utils.getTimeIntervalTextString(timeDiff)
-                  : Utils.getTimeIntervalTextStringHeb(timeDiff)}
+                  <TimeIntervalText time={timeDiff} hebrew={!english} />
               </div>
+              &shy;
               <span
                 className={
                   was

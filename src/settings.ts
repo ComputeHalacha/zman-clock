@@ -1,4 +1,4 @@
-import { Location, findLocation, ZmanTypeIds, getZmanType, Utils } from "jcal-zmanim";
+import { Location, findLocation, ZmanTypeIds, getZmanType, Utils, Zmanim } from "jcal-zmanim";
 import type { ZmanToShow } from "jcal-zmanim";
 
 export default class Settings {
@@ -13,6 +13,7 @@ export default class Settings {
   showDafYomi: boolean;
   english: boolean;
   armyTime: boolean;
+  autoTheme: boolean;
   /**
    *
    * @param {[{id:Number, offset: ?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }]} [zmanimToShow] List of which zmanim to show
@@ -26,6 +27,7 @@ export default class Settings {
    * @param {boolean} [showDafYomi] Show the Daf Yomi?
    * @param {boolean} [english] Show in English?
    * @param {boolean} [armyTime] Time in Army Time format?
+   * @param {boolean} [autoTheme] Should the color scheme be set automtatically?
    */
   constructor(
     zmanimToShow?: ZmanToShow[],
@@ -38,7 +40,8 @@ export default class Settings {
     theme?: string,
     showDafYomi?: boolean,
     english?: boolean,
-    armyTime?: boolean
+    armyTime?: boolean,
+    autoTheme?: boolean
   ) {
     /**
      * @property {[{id:Number, offset: ?Number, whichDaysFlags:?Number, desc: String, eng: String, heb: String }]} zmanimToShow List of which zmanim to show
@@ -93,7 +96,7 @@ export default class Settings {
     /**
      * @property {string} [theme] name of the style theme
      */
-    this.theme = theme || "dark";
+    this.theme = theme || "system";
     /**
      * @property {boolean} [showDafYomi] Show Daf Yomi?
      */
@@ -106,20 +109,43 @@ export default class Settings {
      * @property {boolean} [armyTime] Should the time displyed be Army Time?
      */
     this.armyTime = !!Utils.setDefault(armyTime, false);
-  }
-  clone() {
-    return new Settings(
-      [...this.zmanimToShow],
-      [...this.customZmanim],
-      this.location,
-      this.showNotifications,
-      this.numberOfItemsToShow,
-      this.minToShowPassedZman,
-      this.showGaonShir,
-      this.theme,
-      this.showDafYomi,
-      this.english,
-      this.armyTime
-    );
+    /**
+     * @property {boolean} [autoTheme]  Should the color scheme be set automtatically?
+     */
+    this.autoTheme = !!Utils.setDefault(autoTheme, true);
   }
 }
+
+/**
+ * @param {Location} location
+ * @returns Determines  whether or not it is night time right now at the given location
+ */
+export const isItCurrentlyNightTime = (location: Location): boolean => {
+  const sd = new Date(),
+    nowTime = Utils.timeFromDate(sd),
+    { sunset, sunrise } = Zmanim.getSunTimes(sd, location),
+    isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
+    isAfterShkia = Utils.isTimeAfter(sunset, nowTime),
+    isNight = isBeforeAlos || isAfterShkia;
+  return isNight;
+};
+
+/**
+ * @param settings 
+ * @returns A full clone of the given Setting object
+ */
+export const clone = (settings: Settings): Settings =>
+  new Settings(
+    [...settings.zmanimToShow],
+    [...settings.customZmanim],
+    settings.location,
+    settings.showNotifications,
+    settings.numberOfItemsToShow,
+    settings.minToShowPassedZman,
+    settings.showGaonShir,
+    settings.theme,
+    settings.showDafYomi,
+    settings.english,
+    settings.armyTime,
+    settings.autoTheme
+  );

@@ -1,7 +1,7 @@
 .single-zman {
     display: flex;
     flex-direction: column;
-    background-color: #1e1e1e;
+    background-color: var(--color-deep-background);
     justify-content: center;
     align-items: center;
     border-radius: 7px;
@@ -13,15 +13,15 @@
     cursor: pointer;
 }
 .single-zman:hover {
-    background-color: #2e2e2e;
+    background-color:var(--color-semi-deep-background);
 }
 .zman-time-text {
-    color: #99bb99;
+    color:var(--zman-time-text-color);
 }
 .within-10-zman-time-text {
     font-size: 20px;
     font-weight: bold;
-    color: #99bb99;
+    color:var(--zman-time-text-color);
 }
 .time-remaining-text {
     font-size: min(38px, 5vw);
@@ -32,12 +32,12 @@
     text-align: center;
 }
 .time-remaining-number {
-    color: #ffffee;
+    color: var(--time-remaining-color);
     font-size: min(20px, 4vw);
     padding-right:5px;
 }
 .time-remaining-number-eng {
-    color: #ffffee;
+    color:var(--time-remaining-color);
     font-size: min(17px, 4vw);
     padding-right:5px;
 }
@@ -50,18 +50,18 @@
     font-weight: bold;
 }
 .zman-type-name-text {
-    color: #9999ff;
+    color: var(--zman-type-name-text-color);
     font-size: 22px;
 }
 .zman-type-name-text-eng {
-    color: #9999ff;
+    color: var(--zman-type-name-text-color);
     font-size: 20px;
 }
 .zman-type-name-text-was {
-    color: #555588;
+    color: var(--zman-type-name-text-was-color);
     font-size: 15px;
 }
 .zman-type-name-text-was-eng {
-    color: #555588;
+    color: var(--zman-type-name-text-was-color);
     font-size: 12px;
 }

@@ -1,0 +1,18 @@
+.settings-chooser {
+    @media screen and (max-width: 400px) {
+        letter-spacing: normal;
+        font-size: small;
+    }
+}
+.settings-background{
+    background-color: var(--settings-background);
+}
+.settings-reset-color {
+    color: var(--settings-reset-color);
+}
+.settings-version-color{
+    color:var(--settings-version-color);
+}
+.settings-header-color{
+    color:var(--settings-header-color);
+}

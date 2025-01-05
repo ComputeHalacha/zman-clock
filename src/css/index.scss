@@ -10,9 +10,15 @@
   padding: 0;
   max-width: 100vw;
   height: 100vh;
-  font-family: Rubik, "Noto Sans", system-ui, Helvetica, Arial, sans-serif;
+  font-family: Rubik, system-ui, Helvetica, Arial, sans-serif;
   overscroll-behavior: none;
   touch-action: none;
+}
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
 }
 body {
   margin: 0;
@@ -22,8 +28,8 @@ body {
   line-height: 1.5;
   font-weight: 400;
   color-scheme: dark light;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--color-text);
+  background-color: var(--color-background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -37,10 +43,10 @@ body {
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--color-link);
   text-decoration: inherit;
   :hover {
-    color: #535bf2;
+    color: var(--color-link-hover);
   }
 }
 
@@ -63,11 +69,11 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--color-button-background);
   cursor: pointer;
   transition: border-color 0.25s;
   :hover {
-    border-color: #646cff;
+    border-color: var(--color-button-hover);
   }
   :focus,
   :focus-visible {
@@ -76,7 +82,7 @@ button {
 }
 
 code {
-  background-color: #1a1a1a;
+  background-color: var(--color-button-background);
   padding: 2px 4px;
   margin: 0 4px;
   border-radius: 4px;
@@ -86,25 +92,18 @@ code {
   padding: 2em;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.standard-text-color{
+  color:var(--standard-text-color);
 }
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-  code {
-    background-color: #f9f9f9;
-  }
+.drawer-background-color{
+  background-color: var(--drawer-background-color);
+}
+.selected-text-color{
+  color: var(--selected-text-color);
+}
+.unselected-text-color{
+  color: var(--unselected-text-color);
+}
+.input-background-color{
+  background-color: var(--input-background-color);
 }

@@ -1,7 +1,7 @@
 .fullscreen{
     display: flex;
     flex-direction: column;
-    background-color: #000;
+    background-color:var(--color-background);
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -16,7 +16,7 @@
 .fullscreen-single-zman {
     display: flex;
     flex-direction: column;
-    background-color: #1e1e1e;
+    background-color: var(--color-deep-background);
     justify-content: center;
     align-items: center;
     border-radius: 100px;
@@ -25,12 +25,12 @@
     padding: 20px;
 }
 .fullscreen-zman-time-text {
-    color: #99bb99;
+    color: var(--zman-time-text-color);
 }
 .fullscreen-within-10-zman-time-text {
     font-size: 30px;
     font-weight: bold;
-    color: #99bb99;
+    color: var(--zman-time-text-color);
 }
 .fullscreen-time-remaining-text {
     font-size: min(45px, 20vw);
@@ -41,12 +41,12 @@
     text-align: center;
 }
 .fullscreen-time-remaining-number {
-    color: #ffffee;
+    color: var(--time-remaining-color);
     font-size: min(40px, 8vw);
     padding-right:5px;
 }
 .fullscreen-time-remaining-number-eng {
-    color: #ffffee;
+    color:var(--time-remaining-color);
     font-size: min(34px, 8vw);
     padding-right:5px;
 }
@@ -59,18 +59,18 @@
     font-weight: bold;
 }
 .fullscreen-zman-type-name-text {
-    color: #9999ff;
+    color: var(--zman-type-name-text-color);
     font-size: 40px;
 }
 .fullscreen-zman-type-name-text-eng {
-    color: #9999ff;
+    color: var(--zman-type-name-text-color);
     font-size: 40px;
 }
 .fullscreen-zman-type-name-text-was {
-    color: #555588;
+    color: var(--zman-type-name-text-was-color);
     font-size: 30px;
 }
 .fullscreen-zman-type-name-text-was-eng {
-    color: #555588;
+    color: var(--zman-type-name-text-was-color);
     font-size: 24px;
 }

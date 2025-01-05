@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { SettingsProvider } from './settingsContext'
 import App from './App'
 import './css/fonts.scss'
+import './css/themes.scss'
 import './css/index.scss'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

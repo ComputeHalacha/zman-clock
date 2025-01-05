@@ -1,6 +1,7 @@
-import CloseButton from "./CloseButton";
-import { version } from "../../package.json";
-import favicon from "../../favicon.png";
+import CloseButton from "../CloseButton";
+import { version } from "../../../package.json";
+import favicon from "../../../favicon.png";
+import "./index.tsx.scss";
 
 interface HelpModalProps {
   onClose: () => void;
@@ -13,33 +14,33 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
   return (
     <div
       className={
-        "fixed z-50 inset-0 flex items-center justify-center overflow-hidden max-h-[90vh] w-full " +
+        "fixed z-50 inset-0 flex items-center justify-center overflow-hidden h-full w-full " +
         (isOpen
           ? "transition-opacity opacity-100 duration-500 translate-x-0  "
           : "transition-all delay-500 opacity-0 -translate-x-full  ")
       }
       onClick={() => onClose()}>
       <div className="fixed inset-0 transition-opacity">
-        <div className="absolute inset-0 bg-[#222] opacity-75"></div>
+        <div className="absolute inset-0 bg-[#555] opacity-75 h-full w-full"></div>
       </div>
       <div
         className={`rounded-lg text-left overflow-hidden shadow-xl transform transition-transform duration-300 ease-in-out w-full max-w-[90%] text-${
           english ? "left" : "right"
         } ${isOpen ? "translate-y-0" : "-translate-y-full"}`}>
-        <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 h-[800px] max-h-[85vh] overflow-hidden bg-[#343434]">
-          <div className="flex flex-row justify-between items-center">
+        <div className="help-modal-outside-color px-4 pt-5 pb-4 sm:p-6 sm:pb-4 h-[800px] max-h-[85vh] overflow-hidden">
+          <div className="flex flex-row justify-between items-center text-center">
             <img src={favicon} alt="Zman Clock" className="h-10 w-10" />
             <h3 className="text-lg leading-6 font-large font-bold text-gray-500">
               {english ? "Zman Clock" : "שעון זמנים"}
             </h3>
             <CloseButton onClick={() => onClose()} />
           </div>
-          <div className="text-xs text-[#877] text-center">Version {version}</div>
+          <div className="help-modal-outside-color text-xs text-center">Version {version}</div>
           <div
-            className="mt-2 text-sm text-gray-400 bg-[#212223] max-h-[80%] p-3 overflow-y-scroll"
+            className="help-modal-inside mt-2 text-sm max-h-[80%] p-3 overflow-y-scroll"
             onClick={(e) => e.stopPropagation()}>
             {english ? (
-              <>
+              <div style={{ direction: "ltr" }}>
                 <p>
                   Zman Clock is a Halachic Zmanim clock that shows a list of upcoming Zmanim and how
                   much time remains until that Zman.
@@ -119,9 +120,9 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
                   </li>
                   <li>The maximum number of Zmanim to be shown at one time.</li>
                 </ul>
-              </>
+              </div>
             ) : (
-              <>
+              <div style={{ direction: "rtl" }}>
                 <p>
                   שעון זמנם הוא שעון הלכתי לזמנים שמראה רשימה של זמני היום הקרובים וכמה זמן נותר עד
                   אותו זמן.
@@ -172,7 +173,7 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
                   <li>כמה דקות לאחר זמן פעיל שחלף להמשיך להציג את ההודעה.</li>
                   <li>המספר המרבי של זמנים שיוצגו בבת אחת.</li>
                 </ul>
-              </>
+              </div>
             )}
           </div>
         </div>

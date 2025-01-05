@@ -14,7 +14,6 @@ import {
 import { useSettingsData } from "../settingsContext";
 import Settings from "../settings";
 import { SingleZman } from "../components/SingleZman";
-import Drawer from "../components/Drawer";
 import SettingsChooser from "../components/SettingsChooser";
 import FullScreen from "../components/FullScreen";
 import Sidebar from "../components/Sidebar";
@@ -22,11 +21,13 @@ import HelpModal from "../components/HelpModal";
 import type { SunTimes, Time, ShulZmanimType, ZmanTime, ZmanToShow, Location } from "jcal-zmanim";
 import "./index.tsx.scss";
 
+const __DEV__ = import.meta.env.DEV;
+
 export default function App() {
   const initialSettings = new Settings();
   const initialSDate = new Date();
   const initialJdate = new jDate(initialSDate);
-  const { settings, setSettings } = useSettingsData();
+  const { settings, setSettings, applyColorTheme } = useSettingsData();
 
   const [sdate, setSdate] = useState<Date>(initialSDate);
   const [jdate, setJdate] = useState<jDate>(initialJdate);
@@ -105,6 +106,9 @@ export default function App() {
     setNeedsNotificationsRefresh(true);
     setNeedsFullRefresh(true);
   };
+  const setAutoTheme = (isNight: boolean) => {
+    applyColorTheme(isNight);
+  };
   const refresh = () => {
     const sd = new Date(),
       nowTime = Utils.timeFromDate(sd);
@@ -117,7 +121,7 @@ export default function App() {
       setCurrentTime(nowTime);
       setJdate(jdate);
     } else {
-      console.log("Refreshing all zmanim");
+      __DEV__ && console.log("Refreshing all zmanim");
       const sunset = Zmanim.getSunTimes(sd, settings.location).sunset,
         jdate = Utils.isTimeAfter(sunset, nowTime)
           ? new jDate(Utils.addDaysToSdate(sd, 1))
@@ -144,11 +148,16 @@ export default function App() {
     const { alos, shkia } = shulZmanim,
       isBeforeAlos = Utils.isTimeAfter(nowTime, alos),
       isAfterShkia = Utils.isTimeAfter(shkia, nowTime),
-      isNight = isBeforeAlos && isAfterShkia,
-      beinHashmashos = isNight && Utils.isTimeAfter(nowTime, Utils.addMinutes(shkia, 20));
+      isNight = isBeforeAlos || isAfterShkia, //Note after 12 AM isAfterShkia will return false
+      beinHashmashos = isAfterShkia && Utils.isTimeAfter(nowTime, Utils.addMinutes(shkia, 20));
 
+    setAutoTheme(isNight);
     setIsNightTime(isNight);
     setIsBeinHashmashos(beinHashmashos);
+  };
+
+  const changeSettings = () => {
+    setNeedsFullRefresh(true);
   };
 
   const isPastShulZman = () => {
@@ -165,7 +174,8 @@ export default function App() {
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
         shulZmanim.chatzosHalayla = undefined;
       }
-      console.log("Refreshing notifications due to shkia.");
+      setAutoTheme(isNightTime);
+      __DEV__ && console.log("Refreshing notifications due to shkia.");
       return true;
     } else if (chatzosHayom && Utils.isTimeAfter(chatzosHayom, nowTime)) {
       //We only want to refresh the notifications one time
@@ -175,7 +185,7 @@ export default function App() {
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
         shulZmanim.chatzosHalayla = undefined;
       }
-      console.log("Refreshing notifications due to chatzos hayom.");
+      __DEV__ && console.log("Refreshing notifications due to chatzos hayom.");
       return true;
     } else if (alos && Utils.isTimeAfter(alos, nowTime)) {
       //We only want to refresh the notifications one time
@@ -184,12 +194,13 @@ export default function App() {
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
         shulZmanim.chatzosHalayla = undefined;
       }
-      console.log("Refreshing notifications due to alos.");
+      setAutoTheme(isNightTime);
+      __DEV__ && console.log("Refreshing notifications due to alos.");
       return true;
     } else if (chatzosHalayla && Utils.isTimeAfter(chatzosHalayla, nowTime)) {
       //We only want to refresh the notifications one time
       shulZmanim.chatzosHalayla = undefined;
-      console.log("Refreshing notifications due to chatzosHalayla.");
+      __DEV__ && console.log("Refreshing notifications due to chatzosHalayla.");
       return true;
     }
     return false;
@@ -207,7 +218,8 @@ export default function App() {
         );
         setNeedsNotificationsRefresh(false);
         setNotifications(notifications);
-        console.log("Refreshing notifications: ", jdate, sdate, currentTime);
+        setAutoTheme(isNightTime);
+        __DEV__ && console.log("Refreshing notifications: ", jdate, sdate, currentTime);
       }
     } else if (
       notifications &&
@@ -450,16 +462,16 @@ export default function App() {
               ))}
           </div>
         </div>
-        <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
-          <SettingsChooser
-            onChangeSettings={() => setNeedsFullRefresh(true)}
-            onClose={() => {
-              setShowLocation(false);
-              setIsDrawerOpen(false);
-            }}
-            showLocation={showLocation}
-          />
-        </Drawer>
+        <SettingsChooser
+          isOpen={isDrawerOpen}
+          setIsOpen={setIsDrawerOpen}
+          onChangeSettings={changeSettings}
+          onClose={() => {
+            setShowLocation(false);
+            setIsDrawerOpen(false);
+          }}
+          showLocation={showLocation}
+        />
       </div>{" "}
       <FullScreen
         isOpen={isFullScreenOpen}

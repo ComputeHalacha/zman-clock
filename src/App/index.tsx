@@ -145,15 +145,18 @@ export default function App() {
     fillNotifications();
     setNeedsFullRefresh(false);
 
-    const { alos, shkia } = shulZmanim,
-      isBeforeAlos = Utils.isTimeAfter(nowTime, alos),
-      isAfterShkia = Utils.isTimeAfter(shkia, nowTime),
-      isNight = isBeforeAlos || isAfterShkia, //Note after 12 AM isAfterShkia will return false
-      beinHashmashos = isAfterShkia && Utils.isTimeAfter(nowTime, Utils.addMinutes(shkia, 20));
+    const { alos, shkia } = shulZmanim;
+    
+    if (alos && shkia) {
+      const isBeforeAlos = Utils.isTimeAfter(nowTime, alos),
+        isAfterShkia = Utils.isTimeAfter(shkia, nowTime),
+        isNight = isBeforeAlos || isAfterShkia, //Note after 12 AM isAfterShkia will return false
+        beinHashmashos = isAfterShkia && Utils.isTimeAfter(nowTime, Utils.addMinutes(shkia, 20));
 
-    setAutoTheme(isNight);
-    setIsNightTime(isNight);
-    setIsBeinHashmashos(beinHashmashos);
+      setAutoTheme(isNight);
+      setIsNightTime(isNight);
+      setIsBeinHashmashos(beinHashmashos);
+    }
   };
 
   const changeSettings = () => {

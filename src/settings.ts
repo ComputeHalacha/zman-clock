@@ -121,17 +121,22 @@ export default class Settings {
  * @returns Determines  whether or not it is night time right now at the given location
  */
 export const isItCurrentlyNightTime = (location: Location): boolean => {
+  let isNight = false;
   const sd = new Date(),
     nowTime = Utils.timeFromDate(sd),
-    { sunset, sunrise } = Zmanim.getSunTimes(sd, location),
-    isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
-    isAfterShkia = Utils.isTimeAfter(sunset, nowTime),
+    { sunset, sunrise } = Zmanim.getSunTimes(sd, location);
+  if (sunrise && sunset) {
+    const isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
+      isAfterShkia = Utils.isTimeAfter(sunset, nowTime);
     isNight = isBeforeAlos || isAfterShkia;
+  } else {
+    isNight = nowTime.hour > 18 || nowTime.hour < 6;
+  }
   return isNight;
 };
 
 /**
- * @param settings 
+ * @param settings
  * @returns A full clone of the given Setting object
  */
 export const clone = (settings: Settings): Settings =>

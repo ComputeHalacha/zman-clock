@@ -45,7 +45,7 @@ export const SettingsProvider = (props: PropsWithChildren) => {
     const sStr = JSON.stringify(s);
     localStorage.setItem("Settings", sStr);
     setStateSettings(s);
-    __DEV__ && console.log("set localstorage settings", s);
+    __DEV__ && console.log("settingsContext.tsx-setSettings(settings)", s);
   };
 
   const applyColorTheme = async (isNight?: boolean) => {
@@ -58,6 +58,7 @@ export const SettingsProvider = (props: PropsWithChildren) => {
         correctAutoTheme = isItCurrentlyNightTime(settings.location) ? "dark" : "light";
       }
       if (settings.theme !== correctAutoTheme) {
+        __DEV__ && console.log("settingsContext.tsx-applyColorTheme(isNight)", isNight);
         await setSettings({ ...settings, theme: correctAutoTheme });
       }
       if (current !== correctAutoTheme) {
@@ -81,6 +82,7 @@ export const SettingsProvider = (props: PropsWithChildren) => {
     const ns = new Settings();
     const newSettings = { ...settings, zmanimToShow: ns.zmanimToShow } as Settings;
     localStorage.removeItem("Settings");
+    __DEV__ && console.log("settingsContext.tsx-resetZmanimToShowSettings()");
     await setSettings(newSettings);
   };
 

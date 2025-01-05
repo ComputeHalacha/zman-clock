@@ -10,7 +10,7 @@ type SideBarProps = {
   onDrop: (event: React.DragEvent<HTMLElement>) => void;
 };
 export default function Sidebar({ isOpen, setIsOpen, onDrop }: SideBarProps) {
-  const { settings, setSettings } = useSettingsData();
+  const { settings } = useSettingsData();
   const { english } = settings;
 
   return (
@@ -42,7 +42,7 @@ export default function Sidebar({ isOpen, setIsOpen, onDrop }: SideBarProps) {
           {ZmanTypes.filter((zt) => !settings.zmanimToShow.find((zts) => zts.id === zt.id)).map(
             (zt) => (
               <div
-                className="sidebar-single-item pt-3 pb-3 p-4 mb-2 text-gray-500 bg-[#272727] rounded-lg"
+                className="sidebar-single-item pt-3 pb-3 p-4 mb-2 rounded-lg"
                 key={zt.id}
                 draggable={true}
                 onDragStart={(e) => e.dataTransfer.setData("ZmanTypeToShow", zt.id.toString())}>

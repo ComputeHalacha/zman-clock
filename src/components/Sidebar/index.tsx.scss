@@ -11,6 +11,8 @@
     flex-direction: column;
     min-width: 200px;
     max-width: 40vw;
+    border-right: outset 1px;
+    border-right-color: var(--sidebar-single-item-background-color);
 }
 .sidebar-close-button {
     position: absolute;
@@ -33,8 +35,8 @@
     align-items: left;
 }
 .sidebar-single-item {
-    cursor: pointer;    
-    background-color:var(--sidebar-single-item-background-color);
+    cursor: pointer;
+    background-color: var(--sidebar-single-item-background-color);
     color: var(--sidebar-single-item-text-color);
 }
 .sidebar-single-item:hover {

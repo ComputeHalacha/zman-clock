@@ -9,13 +9,12 @@ interface SingleZManProps extends React.HTMLAttributes<HTMLDivElement> {
   currenttime: Time;
   zt: ZmanTime;
   index: number;
-  itemheight: number;
 }
 
 const SingleZman: React.FC<SingleZManProps> = (props: SingleZManProps) => {
   const { settings } = useSettingsData();
   const { english, numberOfItemsToShow } = settings;
-  const { currenttime, zt, index, itemheight } = props;
+  const { currenttime, zt, index } = props;
 
   if (index >= numberOfItemsToShow) return null;
 
@@ -33,7 +32,7 @@ const SingleZman: React.FC<SingleZManProps> = (props: SingleZManProps) => {
     : "var(--time-text-remaining-color)";
 
   return (
-    <div className="single-zman" style={{ height: `${itemheight}%` }} draggable={true} {...props}>
+    <div className="single-zman" draggable={true} {...props}>
       <div
         className={english ? "time-remaining-label-eng" : "time-remaining-label"}
         style={{ color: was ? "#550" : "#99f" }}>

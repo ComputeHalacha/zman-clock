@@ -1,5 +1,5 @@
-[data-theme="light"] {  
-  --standard-text-color:#213547;
+[data-theme="light"] {
+  --standard-text-color: #213547;
   --color-absolute-background: #ffffff;
   --color-background: #ced2e0;
   --color-deep-background: #d9ddeb;
@@ -33,23 +33,23 @@
   --location-chooser-header-text: #544;
   --location-chooser-item-text-color: #433;
   --location-chooser-item-background-color: #bbc;
-  --settings-background:#f9f9f9;
+  --settings-background: #f9f9f9;
   --settings-reset-color: #523;
   --settings-version-color: #433;
-  --settings-header-color:#555;
-  --drawer-background-color:#f1f1f1;
+  --settings-header-color: #555;
+  --drawer-background-color: #f1f1f1;
   --selected-text-color: #a53;
   --unselected-text-color: #1d3e91;
-  --input-background-color:#dde;
-  --sidebar-background-color:#f9f9f9;
+  --input-background-color: #dde;
+  --sidebar-background-color: var(--color-deep-background);
   --sidebar-header-text-color: #544;
-  --sidebar-single-item-hover:#777;  
-  --sidebar-single-item-background-color:#999696;
-  --sidebar-single-item-text-color:#f0f0f0;
+  --sidebar-single-item-hover: #889;
+  --sidebar-single-item-background-color: #bbc;
+  --sidebar-single-item-text-color: #f0f0f0;
 }
 
 [data-theme="dark"] {
-  --standard-text-color:#9ca3af;
+  --standard-text-color: #9ca3af;
   --color-absolute-background: #000;
   --color-background: #242424;
   --color-deep-background: #1e1e1e;
@@ -83,17 +83,17 @@
   --location-chooser-header-text: #955;
   --location-chooser-item-text-color: #9ca3af;
   --location-chooser-item-background-color: #212223;
-  --settings-background:#212223;
+  --settings-background: #212223;
   --settings-reset-color: #968;
   --settings-version-color: #877;
-  --settings-header-color:#955;
-  --drawer-background-color:#27272a;
+  --settings-header-color: #955;
+  --drawer-background-color: #27272a;
   --selected-text-color: #fbbf24;
   --unselected-text-color: #1d4ed8;
-  --input-background-color:#292928;
-  --sidebar-background-color:#303030;
+  --input-background-color: #292928;
+  --sidebar-background-color: #303030;
   --sidebar-header-text-color: #877;
-  --sidebar-single-item-hover:#505050;
-  --sidebar-single-item-background-color:#272727;
-  --sidebar-single-item-text-color:#6b7280;
+  --sidebar-single-item-hover: #505050;
+  --sidebar-single-item-background-color: #272727;
+  --sidebar-single-item-text-color: #6b7280;
 }

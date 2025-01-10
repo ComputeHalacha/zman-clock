@@ -455,7 +455,6 @@ export default function App() {
                   currenttime={currentTime}
                   zt={zis}
                   index={index}
-                  itemheight={15}
                   onDragStart={(ev) =>
                     ev.dataTransfer.setData("ZmanTypeToHide", zis.zmanType.id.toString())
                   }

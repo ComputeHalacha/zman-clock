@@ -72,21 +72,12 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
                   customizable.
                 </p>
 
-                <p>Adding and removing from the list of Zmanim can be done in two ways:</p>
+                <p>
+                  Adding and removing from the list of Zmanim can be done by opening the Settings
+                  section by pressing or clicking on the Settings icon in the top left corner, and
+                  then toggling the Zman you wish to show or hide.
+                </p>
 
-                <ol>
-                  <li>
-                    By Dragging from the list of Zmanim on the left. To show this list, swipe from
-                    the left side of the screen. The list of Zmanim that are not currently active
-                    will then appear. You can drag from this list to the center section to activate
-                    Zmanim. You can also drag from the zmanim being shown in the cneter section to
-                    the list on the side to de-activate any Zmanim.
-                  </li>
-                  <li>
-                    By opening the Settings section by pressing or clicking on the Settings icon in
-                    the top left corner, and then toggling the Zman you wish to show or hide.
-                  </li>
-                </ol>
                 <p>
                   You can also have Zman Clock show a large countdown to a particular Zman, by
                   pressing or clicking on any Zman being shown in the center section.

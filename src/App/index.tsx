@@ -1,7 +1,4 @@
-import React, { useState, useEffect, DragEvent } from "react";
-import { polyfill } from "mobile-drag-drop";
-import { scrollBehaviourDragImageTranslateOverride } from "mobile-drag-drop/scroll-behaviour";
-
+import React, { useState, useEffect } from "react";
 import {
   jDate,
   Utils,
@@ -16,7 +13,6 @@ import Settings from "../settings";
 import { SingleZman } from "../components/SingleZman";
 import SettingsChooser from "../components/SettingsChooser";
 import FullScreen from "../components/FullScreen";
-import Sidebar from "../components/Sidebar";
 import HelpModal from "../components/HelpModal";
 import type { SunTimes, Time, ShulZmanimType, ZmanTime, ZmanToShow, Location } from "jcal-zmanim";
 import "./index.tsx.scss";
@@ -44,8 +40,7 @@ export default function App() {
   const [needsFullRefresh, setNeedsFullRefresh] = useState(true);
   const [needsNotificationsRefresh, setNeedsNotificationsRefresh] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);  
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [fullScreenZman, setFullScreenZman] = useState<ZmanTime>({
     time: { hour: 0, minute: 0 },
@@ -63,11 +58,7 @@ export default function App() {
   const [isBeinHashmashos, setIsBeinHashmashos] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
   //Run once
-  useEffect(() => {
-    polyfill({
-      dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
-    });
-    window.addEventListener("touchmove", function () {}, { passive: false });
+  useEffect(() => {   
     setInitialData();
   }, []);
 
@@ -330,46 +321,18 @@ export default function App() {
       setFullScreenZman(zmanTimes[index + 1]);
     }
   };
-
-  const sidebarOnDrop = (event: DragEvent<HTMLElement>): void => {
-    const zmanTypeId = parseInt(event.dataTransfer.getData("ZmanTypeToHide"));
-    if (!isNaN(zmanTypeId)) {
-      let list = [...settings.zmanimToShow];
-      if (list.find((zts) => zts.id === zmanTypeId)) {
-        list = list.filter((zts) => zts.id !== zmanTypeId);
-      }
-      setSettings({ ...settings, zmanimToShow: list } as Settings);
-      setNeedsFullRefresh(true);
-    }
-  };
-
-  const appOnDrop = (event: DragEvent<HTMLElement>): void => {
-    const zmanTypeId = parseInt(event.dataTransfer.getData("ZmanTypeToShow"));
-    if (!isNaN(zmanTypeId)) {
-      const zts = ZmanTypes.find((zt) => zt.id === zmanTypeId);
-      setSettings({ ...settings, zmanimToShow: [...settings.zmanimToShow, zts] } as Settings);
-      setNeedsFullRefresh(true);
-    }
-  };
-
-  const hideModalsAndSidebars = () => {
-    setIsDrawerOpen(false);
-    setSidebarOpen(false);
+  
+  const hideModals = () => {
+    setIsDrawerOpen(false);    
     setIsHelpModalOpen(false);
   };
-
-  handleSwipeEdges(() => {
-    setSidebarOpen(true);
-  });
-
+  
   return (
     <>
       <div
-        className={`app ${settings.english ? "app-eng" : "app-heb"}`}
-        onDragEnter={(ev) => ev.preventDefault()}
-        onDragOver={(ev) => ev.preventDefault()}>
+        className={`app ${settings.english ? "app-eng" : "app-heb"}`}>
         <div className="basad">בס"ד</div>
-        <div className="icons fixed sm:top-0 top-0 sm:left-0 left-0 z-10 text-left">
+        <div className="icons fixed top-0 left-0 z-10 text-left m-0 p-0">
           <a
             href="#"
             title={settings.english ? "Settings" : "הגדרות"}
@@ -392,7 +355,7 @@ export default function App() {
             <HelpIcon />
           </a>
         </div>
-        <div className="top-section" onClick={hideModalsAndSidebars}>
+        <div className="top-section" onClick={hideModals}>
           <h4
             className="location-text"
             onClick={(e) => {
@@ -439,27 +402,17 @@ export default function App() {
             {Utils.getTimeString(currentTime, undefined, settings.armyTime)}
           </h1>
         </div>
-        <div className="zmanim-section" onClick={hideModalsAndSidebars}>
+        <div className="zmanim-section" onClick={hideModals}>
           <div
-            className="zmanim-list"
-            onDragOver={(ev) => {
-              ev.preventDefault();
-              ev.dataTransfer.dropEffect = "copy";
-            }}
-            onDragEnter={(ev) => ev.preventDefault()}
-            onDrop={(ev) => appOnDrop(ev)}>
+            className="zmanim-list">
             {zmanTimes &&
               zmanTimes.map((zis, index) => (
                 <SingleZman
                   key={index}
                   currenttime={currentTime}
                   zt={zis}
-                  index={index}
-                  onDragStart={(ev) =>
-                    ev.dataTransfer.setData("ZmanTypeToHide", zis.zmanType.id.toString())
-                  }
+                  index={index}                  
                   onClick={() => showFullScreen(zis)}
-                  onDrag={() => setSidebarOpen(true)}
                 />
               ))}
           </div>
@@ -481,11 +434,6 @@ export default function App() {
         gotoNextZman={() => goToNextZman()}
         zmanTime={fullScreenZman}
         currentTime={currentTime}
-      />
-      <Sidebar
-        isOpen={isSidebarOpen}
-        setIsOpen={setSidebarOpen}
-        onDrop={(ev) => sidebarOnDrop(ev)}
       />
       <HelpModal
         english={settings.english}
@@ -588,9 +536,9 @@ const handleSwipeEdges = (onSwipeLeft?: Function, onSwipeRight?: Function) => {
 
 const Hamburger = () => (
   <svg
-    width="24px"
-    height="24px"
-    viewBox="0 0 24 24"
+    width="30px"
+    height="30px"
+    viewBox="0 0 30 30"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     stroke="#545454">
@@ -620,7 +568,7 @@ const HelpIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
-    viewBox="0 0 24 24"
+    viewBox="0 0 25 25"
     strokeWidth="1.5"
     stroke="#545454"
     className="size-6">

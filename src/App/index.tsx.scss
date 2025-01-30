@@ -9,6 +9,9 @@
 }
 .icons {
     direction: ltr;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
 .garbage-bin {
@@ -32,7 +35,7 @@
 
 .app-eng {
     direction: ltr;
-    letter-spacing: 1px;    
+    letter-spacing: 1px;
 }
 
 .app-heb {
@@ -62,9 +65,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     flex: 1;
-    padding-top: 1vh;
+    padding-top: 0.5vh;
+    border-style: solid;
+    border-color: var(--color-deep-background);    
+    border-top-width: 0px;
+    border-width: 3px;
     background-color: var(--color-background);
+}
+.zmanim-section::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
 }
 .day-notes-view {
     margin-top: 10px;

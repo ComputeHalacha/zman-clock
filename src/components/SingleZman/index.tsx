@@ -32,7 +32,7 @@ const SingleZman: React.FC<SingleZManProps> = (props: SingleZManProps) => {
     : "var(--time-text-remaining-color)";
 
   return (
-    <div className="single-zman" draggable={true} {...props}>
+    <div className="single-zman" {...props}>
       <div
         className={english ? "time-remaining-label-eng" : "time-remaining-label"}
         style={{ color: was ? "#550" : "#99f" }}>

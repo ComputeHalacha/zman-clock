@@ -33,11 +33,7 @@ export default function FullScreen({
       ? `rgb(${200 + minutesFrom10 * 5},
                         ${150 + minutesFrom10 * 5},
                         100)`
-      : "#a99";
-
-  function dragMe(ev: React.DragEvent<HTMLDivElement>): void {
-    setIsOpen(false);
-  }
+      : "#a99";  
 
   function handleScroll(event: UIEvent<HTMLDivElement, UIEvent>): void {
     const position = event.currentTarget.scrollTop;
@@ -64,8 +60,6 @@ export default function FullScreen({
         <article className="relative border border-zinc-800 rounded-r shadow pb-10 flex flex-col space-y-6 overflow-y-scroll h-full w-full">
           <div
             className="fullscreen"
-            draggable={true}
-            onDragStart={(ev) => dragMe(ev)}
             onScroll={(ev) => handleScroll(ev)}>
             <CloseButton className="fullscreen-close-button" onClick={() => setIsOpen(false)} />
             <div className="fullscreen-single-zman">

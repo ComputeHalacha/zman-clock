@@ -9,6 +9,7 @@ interface SettingsContextType {
   setSettings(settings: Settings): Promise<void>;
   resetZmanimToShowSettings(): Promise<void>;
   getCurrentTheme: () => "light" | "dark" | undefined;
+  getCurrentDateTime: () => Date;
   applyColorTheme: (isNight?: boolean) => Promise<void>;
 }
 
@@ -19,30 +20,11 @@ const getCurrentTheme = () =>
   document.documentElement.getAttribute("data-theme") as "light" | "dark" | undefined;
 
 /**
- * @param {"light" | "dark"} theme 
+ * @param {"light" | "dark"} theme
  * @returns Sets the current theme of the app
  */
 const setCurrentTheme = (theme: "light" | "dark") =>
   document.documentElement.setAttribute("data-theme", theme);
-
-/**
- * @param {Location} location
- * @returns Determines  whether or not it is night time right now at the given location
- */
-const isItCurrentlyNightTime = (location: Location) => {
-  let isNight = false;
-  const sd = new Date(),
-    nowTime = Utils.timeFromDate(sd),
-    { sunset, sunrise } = Zmanim.getSunTimes(sd, location);
-  if (sunrise && sunset) {
-    const isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
-      isAfterShkia = Utils.isTimeAfter(sunset, nowTime);
-    isNight = isBeforeAlos || isAfterShkia;
-  } else {
-    isNight = nowTime.hour > 18 || nowTime.hour < 6;
-  }
-  return isNight;
-}
 
 let initialSettings: Settings;
 
@@ -58,11 +40,13 @@ const SettingsContext = createContext<SettingsContextType>({
   setSettings: async (_: Settings) => {},
   resetZmanimToShowSettings: async () => {},
   getCurrentTheme,
+  getCurrentDateTime: () => new Date(),
   applyColorTheme: async () => {},
 });
 
 export const SettingsProvider = (props: PropsWithChildren) => {
   const [settings, setStateSettings] = useState<Settings>(initialSettings);
+  const [devAddSecs, setDevAddSecs] = useState<number>(0);
 
   useEffect(() => {
     applyColorTheme();
@@ -79,7 +63,8 @@ export const SettingsProvider = (props: PropsWithChildren) => {
     const current = getCurrentTheme();
     if (settings?.autoTheme) {
       let correctAutoTheme: "light" | "dark";
-      if (typeof isNight === "boolean") {
+      //if a value is passed, use that value, otherwise determine if it is night Time
+      if (isNight || isNight === false) {
         correctAutoTheme = isNight ? "dark" : "light";
       } else {
         correctAutoTheme = isItCurrentlyNightTime(settings.location) ? "dark" : "light";
@@ -113,12 +98,51 @@ export const SettingsProvider = (props: PropsWithChildren) => {
     await setSettings(newSettings);
   };
 
+  /**
+   * @param {Location} location
+   * @returns Determines  whether or not it is night time right now at the given location
+   */
+  const isItCurrentlyNightTime = (location: Location) => {
+    let isNight = false;
+    const sd = getCurrentDateTime(),
+      nowTime = Utils.timeFromDate(sd),
+      { sunset, sunrise } = Zmanim.getSunTimes(sd, location);
+    if (sunrise && sunset) {
+      const isBeforeAlos = Utils.isTimeAfter(nowTime, sunrise),
+        isAfterShkia = Utils.isTimeAfter(sunset, nowTime);
+      isNight = isBeforeAlos || isAfterShkia;
+    } else {
+      isNight = nowTime.hour > 18 || nowTime.hour < 6;
+    }
+    return isNight;
+  };
+
+  /**
+   * @returns The current system date and time - or a test date if in development mode
+   * This function is used in order to enable a global test datetime for testing purposes
+   */
+  const getCurrentDateTime = () => {
+    //if in development mode, there is an option to return a static date for testing purposes
+    if (__DEV__) {
+      //set the folowing to true to use a static date for testing purposes
+      const useTestDate = false;
+
+      if (useTestDate) {
+        const sd = new Date(1738250158987 + devAddSecs * 1000);
+        setDevAddSecs(devAddSecs + 1);
+        return sd;
+      }
+    }
+    return new Date();
+  };
+
   return (
     <SettingsContext.Provider
       value={{
         settings,
         setSettings,
         getCurrentTheme,
+        getCurrentDateTime,
         resetZmanimToShowSettings,
         applyColorTheme,
       }}>

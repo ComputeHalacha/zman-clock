@@ -5,8 +5,7 @@ import {
   getNotifications,
   ZmanimUtils,
   Zmanim,
-  DaysOfWeek,
-  ZmanTypes,
+  DaysOfWeek  
 } from "jcal-zmanim";
 import { useSettingsData } from "../settingsContext";
 import Settings from "../settings";
@@ -23,11 +22,11 @@ export default function App() {
   const initialSettings = new Settings();
   const initialSDate = new Date();
   const initialJdate = new jDate(initialSDate);
-  const { settings, setSettings, applyColorTheme } = useSettingsData();
+  const { settings, applyColorTheme, getCurrentDateTime } = useSettingsData();
 
   const [sdate, setSdate] = useState<Date>(initialSDate);
   const [jdate, setJdate] = useState<jDate>(initialJdate);
-  const [sunTimes] = useState<SunTimes>(initialJdate.getSunriseSunset(initialSettings.location));
+  const [sunTimes, setSunTimes] = useState<SunTimes>(initialJdate.getSunriseSunset(initialSettings.location));
   const [currentTime, setCurrentTime] = useState<Time>(Utils.timeFromDate(initialSDate));
   const [notifications, setNotifications] = useState<{
     dayNotes: string[];
@@ -35,12 +34,12 @@ export default function App() {
   } | null>({ dayNotes: [], tefillahNotes: [] });
   const [shulZmanim, setShulZmanim] = useState<ShulZmanimType>(
     ZmanimUtils.getBasicShulZmanim(initialSDate, initialSettings.location) as ShulZmanimType
-  );
+  );  
   const [zmanTimes, setZmanTimes] = useState<ZmanTime[]>();
   const [needsFullRefresh, setNeedsFullRefresh] = useState(true);
   const [needsNotificationsRefresh, setNeedsNotificationsRefresh] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);  
+  const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [fullScreenZman, setFullScreenZman] = useState<ZmanTime>({
     time: { hour: 0, minute: 0 },
@@ -58,7 +57,7 @@ export default function App() {
   const [isBeinHashmashos, setIsBeinHashmashos] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
   //Run once
-  useEffect(() => {   
+  useEffect(() => {
     setInitialData();
   }, []);
 
@@ -97,12 +96,12 @@ export default function App() {
     setNeedsNotificationsRefresh(true);
     setNeedsFullRefresh(true);
   };
-  const setAutoTheme = (isNight: boolean) => {
-    applyColorTheme(isNight);
-  };
+  /**
+   * Runs every second - refreshes the zmanim and notifications if needed
+   */
   const refresh = () => {
-    const sd = new Date(),
-      nowTime = Utils.timeFromDate(sd);
+    const sd = getCurrentDateTime();
+    const nowTime = Utils.timeFromDate(sd);
 
     if (!needsFullRefresh && !needsZmanRefresh(sd, nowTime)) {
       if (Utils.isSameSdate(jdate.getDate(), sd) && Utils.isTimeAfter(sunTimes.sunset, nowTime)) {
@@ -112,8 +111,11 @@ export default function App() {
       setCurrentTime(nowTime);
       setJdate(jdate);
     } else {
-      __DEV__ && console.log("Refreshing all zmanim");
-      const sunset = Zmanim.getSunTimes(sd, settings.location).sunset,
+      __DEV__ && console.log("Refreshing all zmanim");      
+      
+      setSunTimes(Zmanim.getSunTimes(sd, settings.location));
+
+      const sunset = sunTimes.sunset,
         jdate = Utils.isTimeAfter(sunset, nowTime)
           ? new jDate(Utils.addDaysToSdate(sd, 1))
           : new jDate(sd),
@@ -133,21 +135,9 @@ export default function App() {
         ZmanimUtils.getBasicShulZmanim(sd, settings.location as Location) as ShulZmanimType
       );
     }
+    checkIfChangingToNight();
     fillNotifications();
     setNeedsFullRefresh(false);
-
-    const { alos, shkia } = shulZmanim;
-    
-    if (alos && shkia) {
-      const isBeforeAlos = Utils.isTimeAfter(nowTime, alos),
-        isAfterShkia = Utils.isTimeAfter(shkia, nowTime),
-        isNight = isBeforeAlos || isAfterShkia, //Note after 12 AM isAfterShkia will return false
-        beinHashmashos = isAfterShkia && Utils.isTimeAfter(nowTime, Utils.addMinutes(shkia, 20));
-
-      setAutoTheme(isNight);
-      setIsNightTime(isNight);
-      setIsBeinHashmashos(beinHashmashos);
-    }
   };
 
   const changeSettings = () => {
@@ -157,7 +147,6 @@ export default function App() {
   const isPastShulZman = () => {
     const nowTime = currentTime,
       { chatzosHayom, chatzosHalayla, alos, shkia } = shulZmanim;
-
     //Notifications need refreshing by chatzos, alos and shkia
     if (shkia && Utils.isTimeAfter(shkia, nowTime)) {
       //We only want to refresh the notifications one time
@@ -168,7 +157,6 @@ export default function App() {
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
         shulZmanim.chatzosHalayla = undefined;
       }
-      setAutoTheme(isNightTime);
       __DEV__ && console.log("Refreshing notifications due to shkia.");
       return true;
     } else if (chatzosHayom && Utils.isTimeAfter(chatzosHayom, nowTime)) {
@@ -188,7 +176,6 @@ export default function App() {
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
         shulZmanim.chatzosHalayla = undefined;
       }
-      setAutoTheme(isNightTime);
       __DEV__ && console.log("Refreshing notifications due to alos.");
       return true;
     } else if (chatzosHalayla && Utils.isTimeAfter(chatzosHalayla, nowTime)) {
@@ -212,7 +199,6 @@ export default function App() {
         );
         setNeedsNotificationsRefresh(false);
         setNotifications(notifications);
-        setAutoTheme(isNightTime);
         __DEV__ && console.log("Refreshing notifications: ", jdate, sdate, currentTime);
       }
     } else if (
@@ -321,16 +307,29 @@ export default function App() {
       setFullScreenZman(zmanTimes[index + 1]);
     }
   };
-  
+
   const hideModals = () => {
-    setIsDrawerOpen(false);    
+    setIsDrawerOpen(false);
     setIsHelpModalOpen(false);
   };
-  
+
+  const checkIfChangingToNight = () => {
+    const {sunrise, sunset} = sunTimes;    
+    if (sunrise && sunset && currentTime) {
+      const isBeforeAlos = Utils.isTimeAfter(currentTime, sunrise),
+        isAfterShkia = Utils.isTimeAfter(sunset, currentTime),
+        isNight = isBeforeAlos || isAfterShkia, //Note after 12 AM isAfterShkia will return false
+        beinHashmashos = isAfterShkia && Utils.isTimeAfter(currentTime, Utils.addMinutes(sunset, 20));
+
+      setIsNightTime(isNight);
+      setIsBeinHashmashos(beinHashmashos);
+      applyColorTheme(isNight);
+    }
+  };
+
   return (
     <>
-      <div
-        className={`app ${settings.english ? "app-eng" : "app-heb"}`}>
+      <div className={`app ${settings.english ? "app-eng" : "app-heb"}`}>
         <div className="basad">בס"ד</div>
         <div className="icons fixed top-0 left-0 z-10 text-left m-0 p-0">
           <a
@@ -403,15 +402,14 @@ export default function App() {
           </h1>
         </div>
         <div className="zmanim-section" onClick={hideModals}>
-          <div
-            className="zmanim-list">
+          <div className="zmanim-list">
             {zmanTimes &&
               zmanTimes.map((zis, index) => (
                 <SingleZman
                   key={index}
                   currenttime={currentTime}
                   zt={zis}
-                  index={index}                  
+                  index={index}
                   onClick={() => showFullScreen(zis)}
                 />
               ))}

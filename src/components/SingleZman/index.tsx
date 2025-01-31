@@ -23,16 +23,21 @@ const SingleZman: React.FC<SingleZManProps> = (props: SingleZManProps) => {
   const minutes = Utils.totalMinutes(timeDiff);
   const minutesFrom10 = 10 - minutes;
   const isWithin10 = !was && !zt.isTomorrow && minutes < 10;
-  const timeRemainingColor = was
-    ? "var(--time-text-was-color)"
-    : isWithin10
-    ? `rgb(${200 + minutesFrom10 * 5},
-                        ${150 + minutesFrom10 * 5},
-                        100)`
-    : "var(--time-text-remaining-color)";
+
+  let timeRemainingColor: string = "var(--time-text-remaining-color)",
+    backgroundColor: string = "var(--color-deep-background)";
+
+  if (was) {
+    timeRemainingColor = "var(--time-text-was-color)";
+    backgroundColor = "var(--single-zman-was-background-color)";
+  } else if (isWithin10) {
+    timeRemainingColor = `rgb(${130 + (minutesFrom10 * 10)},
+                        ${80 + (minutesFrom10 * 9)},
+                        100)`;
+  }
 
   return (
-    <div className="single-zman" {...props}>
+    <div className="single-zman" style={{ backgroundColor: backgroundColor }} {...props}>
       <div
         className={english ? "time-remaining-label-eng" : "time-remaining-label"}
         style={{ color: was ? "#550" : "#99f" }}>

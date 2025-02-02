@@ -119,16 +119,17 @@ export const SettingsProvider = (props: PropsWithChildren) => {
 
   /**
    * @returns The current system date and time - or a test date if in development mode
-   * This function is used in order to enable a global test datetime for testing purposes
+   * This function is used in order to enable a global date/time for testing purposes
    */
   const getCurrentDateTime = () => {
     //if in development mode, there is an option to return a static date for testing purposes
     if (__DEV__) {
       //set the folowing to true to use a static date for testing purposes
       const useTestDate = false;
-
+      const beforeShkia = 1738250158987;
+      const beforeNetz = 1738470420881;
       if (useTestDate) {
-        const sd = new Date(1738250158987 + devAddSecs * 1000);
+        const sd = new Date(beforeNetz + devAddSecs * 1000);
         setDevAddSecs(devAddSecs + 1);
         return sd;
       }

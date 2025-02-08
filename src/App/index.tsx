@@ -5,7 +5,13 @@ import {
   getNotifications,
   ZmanimUtils,
   Zmanim,
-  DaysOfWeek  
+  DaysOfWeek,
+  SunTimes,
+  Time,
+  ShulZmanimType,
+  ZmanTime,
+  ZmanToShow,
+  Location,
 } from "jcal-zmanim";
 import { useSettingsData } from "../settingsContext";
 import Settings from "../settings";
@@ -13,7 +19,6 @@ import { SingleZman } from "../components/SingleZman";
 import SettingsChooser from "../components/SettingsChooser";
 import FullScreen from "../components/FullScreen";
 import HelpModal from "../components/HelpModal";
-import type { SunTimes, Time, ShulZmanimType, ZmanTime, ZmanToShow, Location } from "jcal-zmanim";
 import "./index.tsx.scss";
 
 const __DEV__ = import.meta.env.DEV;
@@ -26,7 +31,9 @@ export default function App() {
 
   const [sdate, setSdate] = useState<Date>(initialSDate);
   const [jdate, setJdate] = useState<jDate>(initialJdate);
-  const [sunTimes, setSunTimes] = useState<SunTimes>(initialJdate.getSunriseSunset(initialSettings.location));
+  const [sunTimes, setSunTimes] = useState<SunTimes>(
+    initialJdate.getSunriseSunset(initialSettings.location)
+  );
   const [currentTime, setCurrentTime] = useState<Time>(Utils.timeFromDate(initialSDate));
   const [notifications, setNotifications] = useState<{
     dayNotes: string[];
@@ -34,7 +41,7 @@ export default function App() {
   } | null>({ dayNotes: [], tefillahNotes: [] });
   const [shulZmanim, setShulZmanim] = useState<ShulZmanimType>(
     ZmanimUtils.getBasicShulZmanim(initialSDate, initialSettings.location) as ShulZmanimType
-  );  
+  );
   const [zmanTimes, setZmanTimes] = useState<ZmanTime[]>();
   const [needsFullRefresh, setNeedsFullRefresh] = useState(true);
   const [needsNotificationsRefresh, setNeedsNotificationsRefresh] = useState(true);
@@ -111,8 +118,8 @@ export default function App() {
       setCurrentTime(nowTime);
       setJdate(jdate);
     } else {
-      __DEV__ && console.log("Refreshing all zmanim");      
-      
+      __DEV__ && console.log("Refreshing all zmanim");
+
       setSunTimes(Zmanim.getSunTimes(sd, settings.location));
 
       const sunset = sunTimes.sunset,
@@ -139,11 +146,9 @@ export default function App() {
     fillNotifications();
     setNeedsFullRefresh(false);
   };
-
   const changeSettings = () => {
     setNeedsFullRefresh(true);
   };
-
   const isPastShulZman = () => {
     const nowTime = currentTime,
       { chatzosHayom, chatzosHalayla, alos, shkia } = shulZmanim;
@@ -290,8 +295,8 @@ export default function App() {
     if (jdate.DayOfWeek === DaysOfWeek.SUNDAY && isNightTime) {
       //Motzai Shabbos gets a special day of the week name
       return settings.english
-        ? `${isBeinHashmashos ? "Bein Hashmashos" : "Motza'ei Shabbos"} ${jdate.toStringHeb(true)}`
-        : `${isBeinHashmashos ? "בין השמשות" : "מוצאי שבת"} ${jdate.toString(true)}`;
+        ? `${isBeinHashmashos ? "Bein Hashmashos" : "Motza'ei Shabbos"} ${jdate.toString(true)}`
+        : `${isBeinHashmashos ? "בין השמשות" : "מוצאי שבת"} ${jdate.toStringHeb(true)}`;
     } else {
       return settings.english ? jdate.toString() : jdate.toStringHeb();
     }
@@ -300,26 +305,24 @@ export default function App() {
     setFullScreenZman(zt);
     setIsFullScreenOpen(true);
   };
-
   const goToNextZman = () => {
     if (zmanTimes) {
       const index = zmanTimes?.indexOf(fullScreenZman) || 0;
       setFullScreenZman(zmanTimes[index + 1]);
     }
   };
-
   const hideModals = () => {
     setIsDrawerOpen(false);
     setIsHelpModalOpen(false);
   };
-
   const checkIfChangingToNight = () => {
-    const {sunrise, sunset} = sunTimes;    
+    const { sunrise, sunset } = sunTimes;
     if (sunrise && sunset && currentTime) {
       const isBeforeAlos = Utils.isTimeAfter(currentTime, sunrise),
         isAfterShkia = Utils.isTimeAfter(sunset, currentTime),
         isNight = isBeforeAlos || isAfterShkia, //Note after 12 AM isAfterShkia will return false
-        beinHashmashos = isAfterShkia && Utils.isTimeAfter(currentTime, Utils.addMinutes(sunset, 20));
+        beinHashmashos =
+          isAfterShkia && Utils.isTimeAfter(currentTime, Utils.addMinutes(sunset, 20));
 
       setIsNightTime(isNight);
       setIsBeinHashmashos(beinHashmashos);
@@ -441,96 +444,6 @@ export default function App() {
     </>
   );
 }
-const handleSwipeEdges = (onSwipeLeft?: Function, onSwipeRight?: Function) => {
-  var div = document.body;
-  var mouse = {
-    isDown: false,
-    inLeft: false,
-    inRight: false,
-    downTimestamp: 0,
-  };
-  var width: number, thresholdStart: number, thresholdEnd: number, thresholdMilliseconds: number;
-
-  function resize() {
-    width = window.innerWidth;
-    thresholdStart = 0.1 * width; //within 10% of screen width
-    thresholdEnd = 0.13 * width; //beyond 13% of screen width
-    thresholdMilliseconds = 500; //must be done in 500 milliseconds
-  }
-  document.addEventListener("resize", resize, false);
-  resize(); //initialize
-
-  div.addEventListener("mousedown", function (e) {
-    var x = e.pageX;
-    mouse.isDown = true;
-    mouse.downTimestamp = performance.now();
-
-    if (x < thresholdStart) {
-      mouse.inLeft = true;
-    } else if (x > width - thresholdStart) {
-      mouse.inRight = true;
-    }
-  });
-  div.addEventListener("mousemove", function (e) {
-    var x = e.pageX;
-    if (mouse.inLeft && x > thresholdEnd) {
-      mouse.inLeft = false;
-      if (performance.now() - mouse.downTimestamp < thresholdMilliseconds) {
-        swipeEdgeFromLeft();
-      }
-    } else if (mouse.inRight && x < width - thresholdEnd) {
-      mouse.inRight = false;
-      if (performance.now() - mouse.downTimestamp < thresholdMilliseconds) {
-        swipeEdgeFromRight();
-      }
-    }
-  });
-  div.addEventListener("mouseup", function (e) {
-    mouse.isDown = false;
-    mouse.inLeft = false;
-    mouse.inRight = false;
-    mouse.downTimestamp = 0;
-  });
-
-  div.addEventListener("touchstart", function (e) {
-    var x = e.touches[0].pageX;
-    mouse.isDown = true;
-    mouse.downTimestamp = performance.now();
-
-    if (x < thresholdStart) {
-      mouse.inLeft = true;
-    } else if (x > width - thresholdStart) {
-      mouse.inRight = true;
-    }
-  });
-  div.addEventListener("touchmove", function (e) {
-    var x = e.touches[0].pageX;
-    if (mouse.inLeft && x > thresholdEnd) {
-      mouse.inLeft = false;
-      if (performance.now() - mouse.downTimestamp < thresholdMilliseconds) {
-        swipeEdgeFromLeft();
-      }
-    } else if (mouse.inRight && x < width - thresholdEnd) {
-      mouse.inRight = false;
-      if (performance.now() - mouse.downTimestamp < thresholdMilliseconds) {
-        swipeEdgeFromRight();
-      }
-    }
-  });
-  div.addEventListener("touchend", function (e) {
-    var x = e.changedTouches[0].pageX;
-    mouse.isDown = false;
-    mouse.inLeft = false;
-    mouse.inRight = false;
-    mouse.downTimestamp = 0;
-  });
-  function swipeEdgeFromLeft() {
-    if (onSwipeLeft) onSwipeLeft();
-  }
-  function swipeEdgeFromRight() {
-    if (onSwipeRight) onSwipeRight();
-  }
-};
 
 const Hamburger = () => (
   <svg

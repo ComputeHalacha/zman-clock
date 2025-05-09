@@ -24,10 +24,10 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
         <div className="absolute inset-0 bg-[#555] opacity-75 h-full w-full"></div>
       </div>
       <div
-        className={`rounded-lg text-left overflow-hidden shadow-xl transform transition-transform duration-300 ease-in-out w-full max-w-[90%] text-${
+        className={`rounded-lg text-left overflow-hidden shadow-xl transform transition-transform duration-300 ease-in-out max-w-[90%] text-${
           english ? "left" : "right"
         } ${isOpen ? "translate-y-0" : "-translate-y-full"}`}>
-        <div className="help-modal-outside-color px-4 pt-5 pb-4 sm:p-6 sm:pb-4 h-[800px] max-h-[85vh] overflow-hidden">
+        <div className="help-modal-outside-color px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-h-[85vh] overflow-hidden">
           <div className="flex flex-row justify-between items-center text-center">
             <img src={favicon} alt="Zman Clock" className="h-10 w-10" />
             <h3 className="text-lg leading-6 font-large font-bold text-gray-500">
@@ -37,7 +37,7 @@ export default function HelpModal({ english, onClose, isOpen }: HelpModalProps) 
           </div>
           <div className="help-modal-outside-color text-xs text-center">Version {version}</div>
           <div
-            className="help-modal-inside mt-2 text-sm max-h-[80%] p-3 overflow-y-scroll"
+            className="help-modal-inside mt-2 text-sm rounded-lg p-3 max-h-[70vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}>
             {english ? (
               <div style={{ direction: "ltr" }}>

@@ -71,7 +71,7 @@
     flex: 1;
     padding-top: 0.5vh;
     border-style: solid;
-    border-color: var(--color-deep-background);    
+    border-color: var(--color-deep-background);
     border-top-width: 0px;
     border-width: 3px;
     background-color: var(--color-background);
@@ -131,11 +131,21 @@
     border-radius: 6px;
     text-align: center;
 }
-
 .date-text {
     color: var(--date-text-color);
     font-size: min(25px, 5vw);
     text-align: center;
+    cursor: pointer;
+}
+.date-add {
+    background-color: var(--color-background);
+    color: var(--basad-color);
+    padding: 5px 10px;
+    border-radius: 100px;    
+    margin:0 20px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .s-date-text {

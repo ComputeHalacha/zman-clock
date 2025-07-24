@@ -63,6 +63,7 @@ export default function App() {
   const [isNightTime, setIsNightTime] = useState(false);
   const [isBeinHashmashos, setIsBeinHashmashos] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
+  const [addDays, setAddDays] = useState<number>(0);
   //Run once
   useEffect(() => {
     setInitialData();
@@ -108,6 +109,9 @@ export default function App() {
    */
   const refresh = () => {
     const sd = getCurrentDateTime();
+    if (addDays !== 0) {
+      sd.setDate(sd.getDate() + addDays);
+    }
     const nowTime = Utils.timeFromDate(sd);
 
     if (!needsFullRefresh && !needsZmanRefresh(sd, nowTime)) {
@@ -376,7 +380,26 @@ export default function App() {
               {settings.english ? "Bein Hashmashos" : "בין השמשות"}
             </div>
           )}
-          <h2 className="date-text">{getDateText()}</h2>
+          <div className="flex flex-row justify-center items-center">
+            <button
+              onClick={() => setAddDays(addDays - 1)}
+              className="date-add"
+              title={settings.english ? "Previous Day" : "יום קודם"}>
+              -
+            </button>
+            <h2
+              className="date-text"
+              onClick={() => setAddDays(0)}
+              title={settings.english ? "Today" : "היום"}>
+              {getDateText()}
+            </h2>
+            <button
+              onClick={() => setAddDays(addDays + 1)}
+              className="date-add"
+              title={settings.english ? "Next Day" : "יום הבא"}>
+              +
+            </button>
+          </div>
           <h3 className="s-date-text">
             {settings.english
               ? Utils.toStringDate(sdate, false, false)
@@ -476,11 +499,7 @@ const Hamburger = () => (
   </svg>
 );
 const HelpIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"    
-    fill="#545454"
-    viewBox="2 2 15 15"    
-    className="size-6">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="#545454" viewBox="2 2 15 15" className="size-6">
     <path
       transform="translate(2,15)scale(.055,.055)"
       d="M 98 -200 l -23 1 -24 13 -24 13 -13 24 -13 24 -1 23 0 23 14 28 15 27 26 12 26 12 19 0 19 0 26 -12 26 -12 15 -27 14 -28 0 -20 0 -20 -12 -26 -12 -26 -27 -15 -28 -14 -23 0 z m -1 21 l 12 -1 25 11 25 12 12 28 11 29 -12 29 -12 29 -29 12 -29 12 -29 -12 -29 -12 -12 -29 -12 -29 11 -29 12 -29 22 -10 22 -11 12 0 z M 99 -160 l -17 0 -12 15 -13 15 6 7 7 6 15 -13 16 -13 11 11 12 12 -19 20 -18 20 6 7 7 6 20 -18 20 -18 0 -17 0 -16 -12 -12 -12 -12 -17 0 z M 100 -60 l -10 0 0 10 0 10 10 0 10 0 0 -10 0 -10 -10 0 z "

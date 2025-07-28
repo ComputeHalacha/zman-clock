@@ -135,18 +135,21 @@
     color: var(--date-text-color);
     font-size: min(25px, 5vw);
     text-align: center;
+    line-break: strict;
     cursor: pointer;
 }
 .date-add {
     background-color: var(--color-background);
-    color: var(--basad-color);
-    padding: 5px 10px;
-    border-radius: 100px;    
-    margin:0 20px;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-}
+    color: var(--basad-color);    
+    height:25px;
+    width:25px;    
+    font-size: 18px;    
+    line-height: 10px;
+    padding: 0 2px 2px 0;    
+    border-radius: 12px;    
+    margin:0 5%;    
+    cursor: pointer;   
+}  
 
 .s-date-text {
     color: var(--s-date-text-color);

@@ -138,6 +138,14 @@
     line-break: strict;
     cursor: pointer;
 }
+.not-today {
+    color: var(--date-text-not-today-color) !important;
+}
+.not-today-warning{
+    color:#E33;
+    font-size: 13px;
+    text-align: center;
+}
 .date-add {
     background-color: var(--color-background);
     color: var(--basad-color);

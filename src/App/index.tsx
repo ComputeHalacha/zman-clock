@@ -388,9 +388,17 @@ export default function App() {
               -
             </button>
             <h2
-              className="date-text"
+              className={`date-text${!!addDays ? " not-today" : ""}`}
               onClick={() => setAddDays(0)}
-              title={settings.english ? "Today" : "היום"}>
+              title={
+                !!addDays
+                  ? settings.english
+                    ? "Return to today"
+                    : "לחזור להיום"
+                  : settings.english
+                  ? "Today"
+                  : "היום"
+              }>
               {getDateText()}
             </h2>
             <button
@@ -405,6 +413,9 @@ export default function App() {
               ? Utils.toStringDate(sdate, false, false)
               : Utils.toShortStringDate(sdate, !settings.location.Israel)}
           </h3>
+          {!!addDays && (
+            <div className="not-today-warning">{settings.english ? "Not today" : "לא היום"}</div>
+          )}
           {!!notifications?.dayNotes && notifications.dayNotes.length > 0 && (
             <div className="day-notes-inner-view">
               {notifications.dayNotes.map((n, index) => (
@@ -426,6 +437,13 @@ export default function App() {
           <h1 className="time-text">
             {Utils.getTimeString(currentTime, undefined, settings.armyTime)}
           </h1>
+          {!!addDays && (
+            <div className="not-today-warning">
+              {settings.english
+                ? "Important Note: The Zmanim shown below are not for today"
+                : "שים לב: זמני היום המוצגים למטה אינם להיום"}
+            </div>
+          )}
         </div>
         <div className="zmanim-section" onClick={hideModals}>
           <div className="zmanim-list">

@@ -167,7 +167,7 @@ export default function SettingsChooser({
                       {eng ? "Change" : "שנה"}
                     </div>
                   </div>
-                  <div className="flex flex-col items-center px-4">
+                  <div className="flex flex-col items-center justify-between w-full">
                     <div className="settings-background px-4 py-2 mb-1.5 w-full">
                       <ToggleSwitch
                         theme={getCurrentTheme()}

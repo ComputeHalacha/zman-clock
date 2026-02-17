@@ -32,7 +32,7 @@ export default function App() {
   const [sdate, setSdate] = useState<Date>(initialSDate);
   const [jdate, setJdate] = useState<jDate>(initialJdate);
   const [sunTimes, setSunTimes] = useState<SunTimes>(
-    initialJdate.getSunriseSunset(initialSettings.location)
+    initialJdate.getSunriseSunset(initialSettings.location),
   );
   const [currentTime, setCurrentTime] = useState<Time>(Utils.timeFromDate(initialSDate));
   const [notifications, setNotifications] = useState<{
@@ -40,7 +40,7 @@ export default function App() {
     tefillahNotes: string[];
   } | null>({ dayNotes: [], tefillahNotes: [] });
   const [shulZmanim, setShulZmanim] = useState<ShulZmanimType>(
-    ZmanimUtils.getBasicShulZmanim(initialSDate, initialSettings.location) as ShulZmanimType
+    ZmanimUtils.getBasicShulZmanim(initialSDate, initialSettings.location) as ShulZmanimType,
   );
   const [zmanTimes, setZmanTimes] = useState<ZmanTime[]>();
   const [needsFullRefresh, setNeedsFullRefresh] = useState(true);
@@ -74,6 +74,12 @@ export default function App() {
     const interval = window.setInterval(refresh, 1000);
     return () => clearInterval(interval);
   });
+
+  useEffect(() => {
+    setNeedsNotificationsRefresh(true);
+    setNeedsFullRefresh(true);
+  }, [addDays]);
+
   const ZmanTypeIds = Object.freeze({
     ChatzosLayla: 0,
     Alos90: 1,
@@ -136,14 +142,14 @@ export default function App() {
           settings.location as Location,
           settings.zmanimToShow,
           settings.minToShowPassedZman,
-          sunTimes.sunset as Time
+          sunTimes.sunset as Time,
         );
       setZmanTimes(zmanTimes);
       setSdate(sd);
       setJdate(jdate);
       setCurrentTime(nowTime);
       setShulZmanim(
-        ZmanimUtils.getBasicShulZmanim(sd, settings.location as Location) as ShulZmanimType
+        ZmanimUtils.getBasicShulZmanim(sd, settings.location as Location) as ShulZmanimType,
       );
     }
     checkIfChangingToNight();
@@ -204,7 +210,7 @@ export default function App() {
           settings.location,
           settings.english,
           settings.showGaonShir,
-          settings.showDafYomi
+          settings.showDafYomi,
         );
         setNeedsNotificationsRefresh(false);
         setNotifications(notifications);
@@ -227,7 +233,7 @@ export default function App() {
       zmanTimes.some(
         (zt) =>
           !zt.isTomorrow &&
-          Utils.totalMinutes(nowTime) - Utils.totalMinutes(zt.time) >= settings.minToShowPassedZman
+          Utils.totalMinutes(nowTime) - Utils.totalMinutes(zt.time) >= settings.minToShowPassedZman,
       )
     );
   };
@@ -241,7 +247,7 @@ export default function App() {
     location: Location,
     zmanimTypes: ZmanToShow[],
     minToShowPassedZman: number,
-    sunset: Time
+    sunset: Time,
   ) => {
     const correctedTimes = [],
       { sdate, jdate } = Utils.bothDates(date),
@@ -258,18 +264,18 @@ export default function App() {
               zt.id === ZmanTypeIds.candleLighting ||
               zt.id === ZmanTypeIds.SofZmanEatingChometz ||
               zt.id === ZmanTypeIds.SofZmanBurnChometz
-            ) || Utils.isTimeAfter(time, sunset)
+            ) || Utils.isTimeAfter(time, sunset),
         ),
         sdate,
         jdate,
-        location
+        location,
       ),
       tomorrowTimes = ZmanimUtils.getZmanTimes(
         //Candle lighting tomorrow is never shown...
         zmanimTypes.filter((zt) => zt.id !== ZmanTypeIds.candleLighting),
         tomorrowSd,
         tomorrowJd,
-        location
+        location,
       );
 
     for (let zt of zmanTimes) {
@@ -292,7 +298,7 @@ export default function App() {
     return correctedTimes.sort(
       (a, b) =>
         (a.isTomorrow ? 1 : -1) - (b.isTomorrow ? 1 : -1) ||
-        Utils.totalSeconds(a.time) - Utils.totalSeconds(b.time)
+        Utils.totalSeconds(a.time) - Utils.totalSeconds(b.time),
     );
   };
   const getDateText = () => {
@@ -372,8 +378,8 @@ export default function App() {
             {settings.english
               ? settings.location.Name
               : !!settings.location.NameHebrew
-              ? settings.location.NameHebrew
-              : settings.location.Name}
+                ? settings.location.NameHebrew
+                : settings.location.Name}
           </h4>
           {isBeinHashmashos && (
             <div className="bein-hashmashos">
@@ -396,8 +402,8 @@ export default function App() {
                     ? "Return to today"
                     : "לחזור להיום"
                   : settings.english
-                  ? "Today"
-                  : "היום"
+                    ? "Today"
+                    : "היום"
               }>
               {getDateText()}
             </h2>

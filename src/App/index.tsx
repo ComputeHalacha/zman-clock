@@ -63,7 +63,7 @@ export default function App() {
   const [isNightTime, setIsNightTime] = useState(false);
   const [isBeinHashmashos, setIsBeinHashmashos] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
-  const [addDays, setAddDays] = useState<number>(0);
+  const [addDays, setAddDays] = useState(0);
   //Run once
   useEffect(() => {
     setInitialData();
@@ -76,6 +76,7 @@ export default function App() {
   });
 
   useEffect(() => {
+    setNotifications(null);
     setNeedsNotificationsRefresh(true);
     setNeedsFullRefresh(true);
   }, [addDays]);

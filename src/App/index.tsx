@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   jDate,
   Utils,
@@ -69,11 +69,22 @@ export default function App() {
     setInitialData();
   }, []);
 
+  const refreshRef = useRef<((force?: boolean) => void) | null>(null);
+  useEffect(() => {
+    refreshRef.current = refresh;
+  });
+
   //Run repeatedly
   useEffect(() => {
-    const interval = window.setInterval(refresh, 1000);
+    const interval = window.setInterval(() => {
+      refreshRef.current && refreshRef.current();
+    }, 1000);
     return () => clearInterval(interval);
-  });
+  }, []);
+
+  useEffect(() => {
+    applyColorTheme(isNightTime);
+  }, [isNightTime]);
 
   useEffect(() => {
     refresh(true);
@@ -118,20 +129,22 @@ export default function App() {
     }
     const nowTime = Utils.timeFromDate(sd);
     let nextJdate = jdate;
+    let nextSunTimes = sunTimes;
 
-    if (!needsFullRefresh && !needsZmanRefresh(sd, nowTime)) {
+    if (!force && !needsFullRefresh && !needsZmanRefresh(sd, nowTime)) {
       if (Utils.isSameSdate(jdate.getDate(), sd) && Utils.isTimeAfter(sunTimes.sunset, nowTime)) {
-        setJdate(jdate.addDays(1));
+        nextJdate = jdate.addDays(1);
+        setJdate(nextJdate);
       }
       setSdate(sd);
       setCurrentTime(nowTime);
-      setJdate(jdate);
     } else {
       __DEV__ && console.log("Refreshing all zmanim");
 
-      setSunTimes(Zmanim.getSunTimes(sd, settings.location));
+      nextSunTimes = Zmanim.getSunTimes(sd, settings.location);
+      setSunTimes(nextSunTimes);
 
-      const sunset = sunTimes.sunset;
+      const sunset = nextSunTimes.sunset;
       nextJdate = Utils.isTimeAfter(sunset, nowTime)
         ? new jDate(Utils.addDaysToSdate(sd, 1))
         : new jDate(sd);
@@ -142,7 +155,7 @@ export default function App() {
         settings.location as Location,
         settings.zmanimToShow,
         settings.minToShowPassedZman,
-        sunTimes.sunset as Time,
+        nextSunTimes.sunset as Time,
       );
       setZmanTimes(zmanTimes);
       setSdate(sd);
@@ -152,7 +165,7 @@ export default function App() {
         ZmanimUtils.getBasicShulZmanim(sd, settings.location as Location) as ShulZmanimType,
       );
     }
-    checkIfChangingToNight();
+    checkIfChangingToNight(nextSunTimes, nowTime);
     fillNotifications(nextJdate, nowTime, force);
     setNeedsFullRefresh(false);
   };
@@ -160,43 +173,44 @@ export default function App() {
     setNeedsFullRefresh(true);
   };
   const isPastShulZman = () => {
-    const nowTime = currentTime,
-      { chatzosHayom, chatzosHalayla, alos, shkia } = shulZmanim;
+    const nowTime = currentTime;
+    const { chatzosHayom, chatzosHalayla, alos, shkia } = shulZmanim;
+    let changed = false;
+    const nextShulZmanim = { ...shulZmanim };
+
     //Notifications need refreshing by chatzos, alos and shkia
     if (shkia && Utils.isTimeAfter(shkia, nowTime)) {
-      //We only want to refresh the notifications one time
-      shulZmanim.shkia = undefined;
-      //Nullify passed zmanim, we are refreshing anyway.
-      shulZmanim.alos = undefined;
-      shulZmanim.chatzosHayom = undefined;
+      nextShulZmanim.shkia = undefined;
+      nextShulZmanim.alos = undefined;
+      nextShulZmanim.chatzosHayom = undefined;
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
-        shulZmanim.chatzosHalayla = undefined;
+        nextShulZmanim.chatzosHalayla = undefined;
       }
       __DEV__ && console.log("Refreshing notifications due to shkia.");
-      return true;
+      changed = true;
     } else if (chatzosHayom && Utils.isTimeAfter(chatzosHayom, nowTime)) {
-      //We only want to refresh the notifications one time
-      shulZmanim.chatzosHayom = undefined;
-      //Nullify passed zmanim, we are refreshing anyway.
-      shulZmanim.alos = undefined;
+      nextShulZmanim.chatzosHayom = undefined;
+      nextShulZmanim.alos = undefined;
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
-        shulZmanim.chatzosHalayla = undefined;
+        nextShulZmanim.chatzosHalayla = undefined;
       }
       __DEV__ && console.log("Refreshing notifications due to chatzos hayom.");
-      return true;
+      changed = true;
     } else if (alos && Utils.isTimeAfter(alos, nowTime)) {
-      //We only want to refresh the notifications one time
-      shulZmanim.alos = undefined;
-      //Nullify passed zmanim, we are refreshing anyway.
+      nextShulZmanim.alos = undefined;
       if (chatzosHalayla && chatzosHalayla.hour < 12) {
-        shulZmanim.chatzosHalayla = undefined;
+        nextShulZmanim.chatzosHalayla = undefined;
       }
       __DEV__ && console.log("Refreshing notifications due to alos.");
-      return true;
+      changed = true;
     } else if (chatzosHalayla && Utils.isTimeAfter(chatzosHalayla, nowTime)) {
-      //We only want to refresh the notifications one time
-      shulZmanim.chatzosHalayla = undefined;
+      nextShulZmanim.chatzosHalayla = undefined;
       __DEV__ && console.log("Refreshing notifications due to chatzosHalayla.");
+      changed = true;
+    }
+
+    if (changed) {
+      setShulZmanim(nextShulZmanim);
       return true;
     }
     return false;
@@ -329,18 +343,19 @@ export default function App() {
     setIsDrawerOpen(false);
     setIsHelpModalOpen(false);
   };
-  const checkIfChangingToNight = () => {
-    const { sunrise, sunset } = sunTimes;
-    if (sunrise && sunset && currentTime) {
-      const isBeforeAlos = Utils.isTimeAfter(currentTime, sunrise),
-        isAfterShkia = Utils.isTimeAfter(sunset, currentTime),
+  const checkIfChangingToNight = (
+    currentSunTimes: SunTimes = sunTimes,
+    time: Time = currentTime,
+  ) => {
+    const { sunrise, sunset } = currentSunTimes;
+    if (sunrise && sunset && time) {
+      const isBeforeAlos = Utils.isTimeAfter(time, sunrise),
+        isAfterShkia = Utils.isTimeAfter(sunset, time),
         isNight = isBeforeAlos || isAfterShkia, //Note after 12 AM isAfterShkia will return false
-        beinHashmashos =
-          isAfterShkia && Utils.isTimeAfter(currentTime, Utils.addMinutes(sunset, 20));
+        beinHashmashos = isAfterShkia && Utils.isTimeAfter(time, Utils.addMinutes(sunset, 20));
 
       setIsNightTime(isNight);
       setIsBeinHashmashos(beinHashmashos);
-      applyColorTheme(isNight);
     }
   };
 

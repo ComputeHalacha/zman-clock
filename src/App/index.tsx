@@ -76,9 +76,7 @@ export default function App() {
   });
 
   useEffect(() => {
-    setNotifications(null);
-    setNeedsNotificationsRefresh(true);
-    setNeedsFullRefresh(true);
+    refresh(true);
   }, [addDays]);
 
   const ZmanTypeIds = Object.freeze({
@@ -108,18 +106,18 @@ export default function App() {
     SofZmanBurnChometz: 23,
   });
   const setInitialData = () => {
-    setNeedsNotificationsRefresh(true);
-    setNeedsFullRefresh(true);
+    refresh(true);
   };
   /**
    * Runs every second - refreshes the zmanim and notifications if needed
    */
-  const refresh = () => {
+  const refresh = (force: boolean = false) => {
     const sd = getCurrentDateTime();
     if (addDays !== 0) {
       sd.setDate(sd.getDate() + addDays);
     }
     const nowTime = Utils.timeFromDate(sd);
+    let nextJdate = jdate;
 
     if (!needsFullRefresh && !needsZmanRefresh(sd, nowTime)) {
       if (Utils.isSameSdate(jdate.getDate(), sd) && Utils.isTimeAfter(sunTimes.sunset, nowTime)) {
@@ -133,28 +131,29 @@ export default function App() {
 
       setSunTimes(Zmanim.getSunTimes(sd, settings.location));
 
-      const sunset = sunTimes.sunset,
-        jdate = Utils.isTimeAfter(sunset, nowTime)
-          ? new jDate(Utils.addDaysToSdate(sd, 1))
-          : new jDate(sd),
-        zmanTimes = getCorrectZmanTimes(
-          sd,
-          nowTime,
-          settings.location as Location,
-          settings.zmanimToShow,
-          settings.minToShowPassedZman,
-          sunTimes.sunset as Time,
-        );
+      const sunset = sunTimes.sunset;
+      nextJdate = Utils.isTimeAfter(sunset, nowTime)
+        ? new jDate(Utils.addDaysToSdate(sd, 1))
+        : new jDate(sd);
+
+      const zmanTimes = getCorrectZmanTimes(
+        sd,
+        nowTime,
+        settings.location as Location,
+        settings.zmanimToShow,
+        settings.minToShowPassedZman,
+        sunTimes.sunset as Time,
+      );
       setZmanTimes(zmanTimes);
       setSdate(sd);
-      setJdate(jdate);
+      setJdate(nextJdate);
       setCurrentTime(nowTime);
       setShulZmanim(
         ZmanimUtils.getBasicShulZmanim(sd, settings.location as Location) as ShulZmanimType,
       );
     }
     checkIfChangingToNight();
-    fillNotifications();
+    fillNotifications(nextJdate, nowTime, force);
     setNeedsFullRefresh(false);
   };
   const changeSettings = () => {
@@ -202,12 +201,16 @@ export default function App() {
     }
     return false;
   };
-  const fillNotifications = () => {
+  const fillNotifications = (
+    jd: jDate = jdate,
+    time: Time = currentTime,
+    force: boolean = false,
+  ) => {
     if (settings.showNotifications) {
-      if (needsFullRefresh || needsNotificationsRefresh || isPastShulZman()) {
+      if (force || needsFullRefresh || needsNotificationsRefresh || isPastShulZman()) {
         const notifications = getNotifications(
-          jdate,
-          currentTime,
+          jd,
+          time,
           settings.location,
           settings.english,
           settings.showGaonShir,
@@ -215,7 +218,7 @@ export default function App() {
         );
         setNeedsNotificationsRefresh(false);
         setNotifications(notifications);
-        __DEV__ && console.log("Refreshing notifications: ", jdate, sdate, currentTime);
+        __DEV__ && console.log("Refreshing notifications: ", jd, sdate, time);
       }
     } else if (
       notifications &&
